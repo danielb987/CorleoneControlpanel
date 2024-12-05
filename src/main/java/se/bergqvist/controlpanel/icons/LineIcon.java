@@ -148,7 +148,35 @@ public class LineIcon extends Icon {
 
     @Override
     public void draw(Graphics2D g, int x, int y) {
-        g.drawImage(_image, x, y, null);
+        if (_type != Type.Empty) {
+            g.drawImage(_image, x, y, null);
+        }
+    }
+
+    @Override
+    public IconData createIconData() {
+        return new LineIconData(this);
+    }
+
+
+    private static class LineIconData implements IconData {
+
+        private final LineIcon _icon;
+
+        private LineIconData(LineIcon icon) {
+            this._icon = icon;
+        }
+
+        @Override
+        public void draw(Graphics2D g, int x, int y) {
+            _icon.draw(g, x, y);
+        }
+
+        @Override
+        public void nextState() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
 }

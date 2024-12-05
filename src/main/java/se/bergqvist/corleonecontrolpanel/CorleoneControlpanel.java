@@ -31,8 +31,8 @@ public class CorleoneControlpanel {
         }
 
         for (Path p : touchScreens) {
-            if (p.toString().equals("/dev/input/event5")) {
-//            if (p.toString().equals("/dev/input/event6")) {
+//            if (p.toString().equals("/dev/input/event5")) {
+            if (p.toString().equals("/dev/input/event6")) {
                 touchScreenMap.put(p, 0);
             }
         }

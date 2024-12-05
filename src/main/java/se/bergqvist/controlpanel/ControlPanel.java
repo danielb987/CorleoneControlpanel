@@ -5,7 +5,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.event.MouseEvent;
+import javax.swing.JPanel;
 import se.bergqvist.controlpanel.icons.Icon;
+import se.bergqvist.controlpanel.icons.IconData;
 
 /**
  * Control panel.
@@ -14,7 +17,16 @@ import se.bergqvist.controlpanel.icons.Icon;
  */
 public class ControlPanel {
 
-    private static final ControlPanel INSTANCE = new ControlPanel();
+//    private static final ControlPanel INSTANCE = new ControlPanel();
+
+    private static final int RASTER_X0 = 20;
+    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
+    private static final int RASTER_NUM_X = 41;
+    private static final int RASTER_NUM_Y = 11;
+    private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
+    private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
+
+    private final IconData[][] iconData = new IconData[RASTER_NUM_X][RASTER_NUM_Y];
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
     int[][] turnouts = {
@@ -118,7 +130,15 @@ public class ControlPanel {
     };
 
     public static ControlPanel get() {
-        return INSTANCE;
+        return GET_INSTANCE.INSTANCE;
+    }
+
+    public ControlPanel() {
+        for (int y=0; y < RASTER_NUM_Y; y++) {
+            for (int x=0; x < RASTER_NUM_X; x++) {
+                iconData[x][y] = Icon.get(Icon.Type.Empty).get(0).createIconData();
+            }
+        }
     }
 
     public void draw(Graphics2D g) {
@@ -257,14 +277,15 @@ public class ControlPanel {
         g.setStroke(capRoundStroke);
 
         drawRaster(g);
-    }
 
-    private static final int RASTER_X0 = 20;
-    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
-    private static final int RASTER_NUM_X = 41;
-    private static final int RASTER_NUM_Y = 11;
-    private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
-    private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
+        for (int y=0; y < RASTER_NUM_Y; y++) {
+            for (int x=0; x < RASTER_NUM_X; x++) {
+                int px = RASTER_X0 + Icon.RASTER_MARGIN + x * Icon.RASTER_SIZE;
+                int py = RASTER_Y0 + Icon.RASTER_MARGIN + y * Icon.RASTER_SIZE;
+                iconData[x][y].draw(g, px, py);
+            }
+        }
+    }
 
     private void drawRaster(Graphics2D g) {
         Stroke stroke = new BasicStroke(1.0f);
@@ -280,4 +301,25 @@ public class ControlPanel {
         }
     }
 
+    public void mousePressed(MouseEvent me, JPanel panel) {
+        int mx = me.getX();
+        int my = me.getY();
+
+        System.out.format("xx: %d, yy: %d%n", mx, my);
+
+        if (mx > RASTER_X0 && mx < RASTER_MAX_X && my > RASTER_Y0 && my < RASTER_MAX_Y) {
+            int x = (mx - RASTER_X0) / Icon.RASTER_SIZE;
+            int y = (my - RASTER_Y0) / Icon.RASTER_SIZE;
+            System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, mx, my);
+            iconData[x][y] = Icon.get(Icon.Type.Line).get(5).createIconData();
+            panel.repaint();
+        }
+    }
+
+
+    private static class GET_INSTANCE {
+
+        private static ControlPanel INSTANCE = new ControlPanel();
+
+    }
 }

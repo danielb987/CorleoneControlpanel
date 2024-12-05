@@ -151,4 +151,30 @@ public class TurnoutIcon extends Icon {
         g.drawImage(_image, x, y, null);
     }
 
+    @Override
+    public IconData createIconData() {
+        return new TurnoutIconData(this);
+    }
+
+
+    private static class TurnoutIconData implements IconData {
+
+        private final TurnoutIcon _icon;
+
+        private TurnoutIconData(TurnoutIcon icon) {
+            this._icon = icon;
+        }
+
+        @Override
+        public void draw(Graphics2D g, int x, int y) {
+            _icon.draw(g, x, y);
+        }
+
+        @Override
+        public void nextState() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+    }
+
 }
