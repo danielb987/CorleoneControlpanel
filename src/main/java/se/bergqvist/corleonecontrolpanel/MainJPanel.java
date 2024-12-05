@@ -24,7 +24,7 @@ public class MainJPanel extends JPanel implements MouseListener {
     private static final int TOUCH_WIDTH = 16380;
     private static final int TOUCH_HEIGHT = 9600;
 
-    private static final ControlPanel controlPanel = ControlPanel.get();
+//    private static final ControlPanel controlPanel = ControlPanel.get();
 
     private final MainJFrame _frame;
 
@@ -98,7 +98,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         bufferGraphics.setColor(Color.BLACK);
 //        bufferGraphics.drawLine(0, 0, bounds.width, bounds.height);
 
-        controlPanel.draw(bufferGraphics);
+        ControlPanel.get().draw(bufferGraphics);
 /*
         bufferGraphics.setColor(Color.RED);
         bufferGraphics.drawLine(0, my, bounds.width, my);
@@ -145,6 +145,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         my = me.getY();
 //        mx = me.getXOnScreen();
 //        my = me.getYOnScreen();
+        ControlPanel.get().mousePressed(me, this);
     }
 
     @Override

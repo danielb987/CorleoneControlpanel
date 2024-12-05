@@ -149,4 +149,30 @@ public class TurntableIcon extends Icon {
         g.drawImage(_image, x, y, null);
     }
 
+    @Override
+    public IconData createIconData() {
+        return new TurntableIconData(this);
+    }
+
+
+    private static class TurntableIconData implements IconData {
+
+        private final TurntableIcon _icon;
+
+        private TurntableIconData(TurntableIcon icon) {
+            this._icon = icon;
+        }
+
+        @Override
+        public void draw(Graphics2D g, int x, int y) {
+            _icon.draw(g, x, y);
+        }
+
+        @Override
+        public void nextState() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+    }
+
 }
