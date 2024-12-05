@@ -44,7 +44,10 @@ public abstract class Icon {
         }
     }
 
-    protected static final int SIZE = 45; // pixels
+    public static final int SIZE = 45; // pixels
+//    public static final int SIZE = 47; // pixels
+    public static final int RASTER_MARGIN = 1;
+    public static final int RASTER_SIZE = SIZE + RASTER_MARGIN; // pixels
 
     protected static final Map<Type, Map<Integer, Icon>> _iconMap = new HashMap<>();
     protected static final Map<Type, List<Icon>> _iconByTypeList = new HashMap<>();

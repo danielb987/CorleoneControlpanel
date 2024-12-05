@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import se.bergqvist.controlpanel.icons.Icon;
-import se.bergqvist.controlpanel.icons.TurntableIcon;
 
 /**
  * Control panel.
@@ -130,12 +129,12 @@ public class ControlPanel {
         g.setColor(Color.BLUE);
         for (int i=0; i < 40; i++) {
             int offset = 25;
-            g.drawLine(i*46+offset, 0, i*46+offset, 1080);
+            g.drawLine(i*Icon.RASTER_SIZE+offset, 0, i*Icon.RASTER_SIZE+offset, 1080);
         }
         for (int i=0; i < 20; i++) {
 //            int offset = 17 + 23;
             int offset = 40;
-            g.drawLine(0, i*46+offset, 1920, i*46+offset);
+            g.drawLine(0, i*Icon.RASTER_SIZE+offset, 1920, i*Icon.RASTER_SIZE+offset);
         }
 */
         Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
@@ -194,19 +193,13 @@ public class ControlPanel {
         }
 */
 
-        g.setColor(oldColor);
-        g.setStroke(oldStroke);
-
-
-
-
 
         int count = 0;
 /*
         for (int i=0; i <= 255; i++) {
             Icon icon = Icon.get(i);
             if (icon != null) {
-                int x = 100 + count++ * 46;
+                int x = 100 + count++ * Icon.RASTER_SIZE;
                 int y = 600;
                 icon.draw(g, x, y);
             }
@@ -216,10 +209,10 @@ public class ControlPanel {
         for (LineIcon.Type type : LineIcon.Type.values()) {
             count = 0;
 //            y += 50;
-            y += 46;
-            int i = 0;
+            y += Icon.RASTER_SIZE;
+//            int i = 0;
             for (Icon icon : Icon.get(type)) {
-                int x = 100 + count++ * 46;
+                int x = 100 + count++ * Icon.RASTER_SIZE;
                 icon.draw(g, x, y);
 //                System.out.format("Type: %s, i: %d, class: %s%n", type.name(), i++, icon.getClass());
             }
@@ -228,27 +221,63 @@ public class ControlPanel {
         Icon turntable = Icon.get(Icon.Type.WyeSlip, 0);
         turntable.draw(g, 1200, 700);
 
-        Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-46, 700-1*46);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-46, 700+0*46);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-46, 700+1*46);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-46, 700+2*46);
+        Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
 
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*46, 700-1*46);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*46, 700-1*46);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*46, 700-1*46);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
 
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*46, 700+0*46);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*46, 700+1*46);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*46, 700+2*46);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
 
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1336, 700+0*46);
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1336, 700+1*46);
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1336, 700+2*46);
+        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
 
 
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*46, 700+3*46);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*46, 700+3*46);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*46, 700+3*46);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
+        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
+
+
+        drawControlPanel(g);
+
+        g.setColor(oldColor);
+        g.setStroke(oldStroke);
+    }
+
+    private void drawControlPanel(Graphics2D g) {
+        Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+        Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g.setColor(Color.BLACK);
+        g.setStroke(capRoundStroke);
+
+        drawRaster(g);
+    }
+
+    private static final int RASTER_X0 = 20;
+    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
+    private static final int RASTER_NUM_X = 41;
+    private static final int RASTER_NUM_Y = 11;
+    private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
+    private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
+
+    private void drawRaster(Graphics2D g) {
+        Stroke stroke = new BasicStroke(1.0f);
+        g.setColor(Color.GREEN);
+        g.setStroke(stroke);
+
+        for (int x=0; x <= RASTER_NUM_X; x++) {
+            g.drawLine(RASTER_X0 + x * Icon.RASTER_SIZE, RASTER_Y0, RASTER_X0 + x * Icon.RASTER_SIZE, RASTER_MAX_Y);
+        }
+
+        for (int y=0; y <= RASTER_NUM_Y; y++) {
+            g.drawLine(RASTER_X0, RASTER_Y0 + y * Icon.RASTER_SIZE, RASTER_MAX_X, RASTER_Y0 + y * Icon.RASTER_SIZE);
+        }
     }
 
 }
