@@ -109,7 +109,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         bufferGraphics.drawLine(x, 0, x, bounds.height);
 */
 
-        bufferGraphics.drawRect(2, 2, 1916, 1076);
+////        bufferGraphics.drawRect(2, 2, 1916, 1076);
 
 ////        draw(bufferGraphics, false, null, 0, 0, 0, 0);
 

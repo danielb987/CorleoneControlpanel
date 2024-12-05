@@ -63,7 +63,7 @@ public class TurntableIcon extends Icon {
     };
 
     private static final int NUM = 3;
-    private static final int MY_SIZE = NUM * (SIZE + 1) - 1;
+    private static final int MY_SIZE = NUM * Icon.RASTER_SIZE - RASTER_MARGIN;
 
     private final Type _type;
     private final int _width;
@@ -113,17 +113,17 @@ public class TurntableIcon extends Icon {
         int sub = 10;
 //        int sub = 60;
         _graphics.setColor(Color.WHITE);
-        _graphics.fillOval(sub, sub, _width*SIZE-sub*2, _height*SIZE-sub*2);
+        _graphics.fillOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
         _graphics.setColor(Color.BLACK);
-        _graphics.drawOval(sub, sub, _width*SIZE-sub*2, _height*SIZE-sub*2);
+        _graphics.drawOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
 
-//        _graphics.drawLine(0, _height*SIZE-1, _width*SIZE-1, 0);
+//        _graphics.drawLine(0, _height*RASTER_SIZE-RASTER_MARGIN, _width*RASTER_SIZE-RASTER_MARGIN, 0);
 
         _graphics.setColor(Color.RED);
 //        _graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //        int angle = 144;    // 14,4 degrees
-        double w = (_width + 1) * SIZE + 1;
-        double h = (_height  + 1) * SIZE + 1;
+        double w = MY_SIZE;
+        double h = MY_SIZE;
         double w2 = MY_SIZE / 2.0;
         double h2 = MY_SIZE / 2.0;
 
