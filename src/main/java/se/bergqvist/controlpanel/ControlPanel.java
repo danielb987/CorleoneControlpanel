@@ -6,27 +6,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
-import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import se.bergqvist.controlpanel.icons.Icon;
 import se.bergqvist.controlpanel.icons.IconData;
 import se.bergqvist.log.Logger;
-import se.bergqvist.xml.LoadXml;
-import se.bergqvist.xml.StoreXml;
 
 /**
  * Control panel.
@@ -48,6 +34,9 @@ public final class ControlPanel {
 
     private final List<IconWithPosition> _iconPalette = new ArrayList<>();
     private IconWithPosition _selectedIcon;
+
+    private boolean _drawOldControlPanel = false;
+    private boolean _drawNewControlPanel = true;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
     int[][] turnouts = {
@@ -178,43 +167,46 @@ public final class ControlPanel {
             g.drawLine(0, i*Icon.RASTER_SIZE+offset, 1920, i*Icon.RASTER_SIZE+offset);
         }
 */
-        Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
-        Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        g.setColor(Color.BLACK);
-        g.setStroke(capRoundStroke);
-        for (int[] line : lines) {
-            int offset = 1500 - line[0] * 330;
-            g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
-        }
-//        for (int display=0; display < 5; display++) {
-//        }
-
-//        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
-        // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
-        for (int[] turnout : turnouts) {
-            boolean thrown = Math.random() < 0.5;
-            int offset = 1500 - turnout[2] * 330;
-            if (thrown) {
-                g.setColor(Color.WHITE);
-                g.setStroke(capButtStroke);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                g.setColor(Color.BLACK);
-                g.setStroke(capRoundStroke);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-            } else {
-                g.setColor(Color.WHITE);
-                g.setStroke(capButtStroke);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-                g.setColor(Color.BLACK);
-                g.setStroke(capRoundStroke);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+        if (_drawOldControlPanel) {
+            Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+            Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+            g.setColor(Color.BLACK);
+            g.setStroke(capRoundStroke);
+            for (int[] line : lines) {
+                int offset = 1500 - line[0] * 330;
+                g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
             }
-/*
-            g.setColor(Color.RED);
-            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-            g.setColor(Color.GREEN);
-            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-*/
+    //        for (int display=0; display < 5; display++) {
+    //        }
+
+    //        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+
+            // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
+            for (int[] turnout : turnouts) {
+                boolean thrown = Math.random() < 0.5;
+                int offset = 1500 - turnout[2] * 330;
+                if (thrown) {
+                    g.setColor(Color.WHITE);
+                    g.setStroke(capButtStroke);
+                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+                    g.setColor(Color.BLACK);
+                    g.setStroke(capRoundStroke);
+                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+                } else {
+                    g.setColor(Color.WHITE);
+                    g.setStroke(capButtStroke);
+                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+                    g.setColor(Color.BLACK);
+                    g.setStroke(capRoundStroke);
+                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+                }
+    /*
+                g.setColor(Color.RED);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+                g.setColor(Color.GREEN);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+    */
+            }
         }
 
 /*
@@ -373,6 +365,8 @@ public final class ControlPanel {
             for (int x=0; x < RASTER_NUM_X; x++) {
                 IconData id = iconData[x][y];
                 Icon i = id.getIcon();
+                if (i.getType() == Icon.Type.Empty) continue;   // Don't store empty icons
+
                 Element icon = new Element("Icon");
                 icon.setAttribute("x", Integer.toString(x));
                 icon.setAttribute("y", Integer.toString(y));
