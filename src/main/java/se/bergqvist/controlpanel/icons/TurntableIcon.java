@@ -63,7 +63,7 @@ public class TurntableIcon extends Icon {
     };
 
     private static final int NUM = 3;
-    private static final int MY_SIZE = NUM * Icon.RASTER_SIZE - RASTER_MARGIN;
+    private static final int MY_SIZE = NUM * Icon.RASTER_SIZE - Icon.RASTER_MARGIN;
 
     private final Type _type;
     private final int _width;
@@ -152,6 +152,16 @@ public class TurntableIcon extends Icon {
     @Override
     public void draw(Graphics2D g, int x, int y) {
         g.drawImage(_image, x, y, null);
+    }
+
+    @Override
+    public void drawFrame(Graphics2D g, int x, int y) {
+        g.drawRect(x-1, y-1, MY_SIZE+1, MY_SIZE+1);
+    }
+
+    @Override
+    public boolean isHit(int x, int y, int hitX, int hitY) {
+        return hitX >= x && hitX <= x + MY_SIZE && hitY >= y && hitY <= y + MY_SIZE;
     }
 
     @Override
