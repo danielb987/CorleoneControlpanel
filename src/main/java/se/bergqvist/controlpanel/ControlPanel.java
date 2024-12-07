@@ -338,11 +338,13 @@ public final class ControlPanel {
         System.out.format("xx: %d, yy: %d%n", ex, ey);
 
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
-            int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
-            int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
-            System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
-            iconData[x][y] = _selectedIcon._icon.createIconData();
-            panel.repaint();
+            if (_selectedIcon != null) {
+                int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
+                int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
+                System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
+                iconData[x][y] = _selectedIcon._icon.createIconData();
+                panel.repaint();
+            }
         } else {
             for (IconWithPosition ip : _iconPalette) {
                 if (ip._icon.isHit(ip._x, ip._y, ex, ey)) {

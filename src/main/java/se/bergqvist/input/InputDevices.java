@@ -9,8 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,9 +22,9 @@ import java.util.Set;
  */
 public class InputDevices {
 
-    public Set<Path> getInputDevices() {
+    public Map<Path, String> getInputDevices() {
 
-        Set<Path> devices = new HashSet<>();
+        Map<Path, String> devices = new HashMap<>();
 
         try {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/dev/input"))) {
@@ -31,8 +33,9 @@ public class InputDevices {
 //                    System.out.println(filename);
                     if (!Files.isDirectory(path) && filename.startsWith("/dev/input/event")) {
 //                        System.out.println(path.getFileName());
-                        if (callUdevadm(filename)) {
-                            devices.add(path);
+                        String devPath = callUdevadm(filename);
+                        if (devPath != null) {
+                            devices.put(path, devPath);
                         }
                     }
                 }
@@ -44,7 +47,7 @@ public class InputDevices {
         return devices;
     }
 
-    private boolean callUdevadm(String inputDevice) {
+    private String callUdevadm(String inputDevice) {
 
         List<String> output = new ArrayList<>();
 
@@ -77,6 +80,9 @@ public class InputDevices {
             if (exitVal == 0) {
 //                System.out.println("Success!");
 //                System.out.println(output);
+//                for (String s : output) {
+//                    System.out.println(s);
+//                }
             } else {
                 //abnormal...
                 throw new IOException("Exited with error: "+Integer.toString(exitVal));
@@ -86,7 +92,7 @@ public class InputDevices {
             e.printStackTrace();
 	}
 
-        return isTouchScreen;
+        return isTouchScreen ? devPath : null;
     }
 
 }

@@ -26,6 +26,21 @@ public class CorleoneControlpanel {
 
     public static void main(String[] args) {
 
+        Map<Path, String> touchScreens = new InputDevices().getInputDevices();
+        Map<Path, Integer> touchScreenMap = new HashMap<>();
+
+        for (Path p : touchScreens.keySet()) {
+//            System.out.format("Touch screen: %s%n", p);
+            touchScreenMap.put(p, -1);
+        }
+/*
+        for (Path p : touchScreens.keySet()) {
+//            if (p.toString().equals("/dev/input/event5")) {
+            if (p.toString().equals("/dev/input/event6")) {
+                touchScreenMap.put(p, 0);
+            }
+        }
+*/
         // We need a temporary frame to create icon images
         JFrame tempFrame = new JFrame();
         tempFrame.pack();
@@ -36,23 +51,6 @@ public class CorleoneControlpanel {
 
         File file = new File(Config.get().getFilename());
         new LoadXml().load(file);
-
-
-
-        Set<Path> touchScreens = new InputDevices().getInputDevices();
-        Map<Path, Integer> touchScreenMap = new HashMap<>();
-
-        for (Path p : touchScreens) {
-//            System.out.format("Touch screen: %s%n", p);
-            touchScreenMap.put(p, -1);
-        }
-
-        for (Path p : touchScreens) {
-//            if (p.toString().equals("/dev/input/event5")) {
-            if (p.toString().equals("/dev/input/event6")) {
-                touchScreenMap.put(p, 0);
-            }
-        }
 
         // TODO:
         // Save and restore map between touch and screen

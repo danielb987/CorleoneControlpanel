@@ -6,9 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
+import se.bergqvist.controlpanel.Button;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.touch.TouchEnum;
 import se.bergqvist.touch.TouchEvent;
@@ -24,6 +27,8 @@ public class MainJPanel extends JPanel implements MouseListener {
 
     private static final int TOUCH_WIDTH = 16380;
     private static final int TOUCH_HEIGHT = 9600;
+
+    private Button touchPanelButton;
 
 //    private static final ControlPanel controlPanel = ControlPanel.get();
 
@@ -57,7 +62,9 @@ public class MainJPanel extends JPanel implements MouseListener {
 //                || event.getType() == TouchEnum.Drag
 //                || event.getType() == TouchEnum.EndDrag) {
 
-            if (bounds != null) {
+            if (touchPanelButton.isHit(x, y)) {
+                System.out.println("HIT!!!");
+            } else if (bounds != null) {
                 this.x = (int) (((double)event.getX()) * bounds.width / TOUCH_WIDTH);
                 this.y = (int) (((double)event.getY()) * bounds.height / TOUCH_HEIGHT);
                 this.ex = event.getX();
@@ -114,7 +121,7 @@ public class MainJPanel extends JPanel implements MouseListener {
 ////        bufferGraphics.drawRect(2, 2, 1916, 1076);
 
 ////        draw(bufferGraphics, false, null, 0, 0, 0, 0);
-
+/*
         Font font = new Font("Verdana", Font.PLAIN, 12);
         bufferGraphics.setFont(font);
 //        String str = String.format("%1.2f", scaleFactor);
@@ -133,7 +140,11 @@ public class MainJPanel extends JPanel implements MouseListener {
         str = String.format("TOUCH_WIDTH: %1.0f, TOUCH_HEIGHT: %1.0f", touchWidth, touchHeight);
         bufferGraphics.drawString(str, 2, 90);
 //        System.out.format("ey: %d, my: %d, height: %d, TH: %1.0f%n", ey, my, bounds.height, touchHeight);
-
+*/
+        if (touchPanelButton == null) {
+            touchPanelButton = new Button(g, "Touch", 0, 0, 120, 50);
+        }
+        touchPanelButton.draw(bufferGraphics);
         g.drawImage(offscreenImage, 0, 0, this);
     }
 
