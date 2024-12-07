@@ -2,12 +2,18 @@ package se.bergqvist.corleonecontrolpanel;
 
 import se.bergqvist.event.EventTypeEnum;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JFrame;
+import se.bergqvist.config.Config;
 import se.bergqvist.event.EventEnum;
 import se.bergqvist.touch.TouchManager;
+import se.bergqvist.xml.StoreXml;
 
 // Force fsck on next boot:
 // https://www.cyberciti.biz/faq/linux-force-fsck-on-the-next-reboot-or-boot-sequence/
@@ -45,6 +51,13 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     public void init() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                File file = new File(Config.get().getFilename());
+                new StoreXml().store(file);
+            }
+        });
 //        Thread t = new Thread(this::listenToEvents);
 //        t.setDaemon(true);
 //        t.start();

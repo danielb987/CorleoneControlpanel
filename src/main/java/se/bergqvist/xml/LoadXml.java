@@ -12,6 +12,7 @@ import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaders;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.log.Logger;
 
 /**
@@ -35,11 +36,15 @@ public class LoadXml {
     private void readXml(File file) throws JDOMException, IOException {
         Element root = getRoot(file);
         System.out.format("root: %s: %s%n", root.getName(), root.getClass().getName());
+        Element configuration = root.getChild("Configuration");
+        Element controlpanel = root.getChild("Controlpanel");
+        ControlPanel.get().loadXml(controlpanel);
+        Element views = root.getChild("Views");
     }
 
     protected Element getRoot(File file) throws JDOMException, IOException {
         try (FileInputStream stream = new FileInputStream(file)) {
-            LOG.error("getRoot from stream");
+//            LOG.error("getRoot from stream");
 
 //            processingInstructionHRef = null;
 //            processingInstructionType = null;
