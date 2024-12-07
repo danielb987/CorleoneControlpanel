@@ -130,7 +130,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         double touchHeight = 1.0*ey/my*bounds.height;
         str = String.format("TOUCH_WIDTH: %1.0f, TOUCH_HEIGHT: %1.0f", touchWidth, touchHeight);
         bufferGraphics.drawString(str, 2, 90);
-        System.out.format("ey: %d, my: %d, height: %d, TH: %1.0f%n", ey, my, bounds.height, touchHeight);
+//        System.out.format("ey: %d, my: %d, height: %d, TH: %1.0f%n", ey, my, bounds.height, touchHeight);
 
         g.drawImage(offscreenImage, 0, 0, this);
     }

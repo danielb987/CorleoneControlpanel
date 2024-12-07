@@ -3,15 +3,19 @@ package se.bergqvist.corleonecontrolpanel;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.JFrame;
 import se.bergqvist.controlpanel.icons.LineIcon;
 import se.bergqvist.controlpanel.icons.TurnoutIcon;
 import se.bergqvist.controlpanel.icons.TurntableIcon;
 import se.bergqvist.input.InputDevices;
 import se.bergqvist.touch.TouchManager;
+import se.bergqvist.xml.LoadXml;
+import se.bergqvist.xml.StoreXml;
 
 /**
  * Main program
@@ -22,11 +26,26 @@ public class CorleoneControlpanel {
 
     public static void main(String[] args) {
 
+        // We need a temporary frame to create icon images
+        JFrame tempFrame = new JFrame();
+        tempFrame.pack();
+        LineIcon.initialize(tempFrame);
+        TurnoutIcon.initialize(tempFrame);
+        TurntableIcon.initialize(tempFrame);
+        tempFrame.dispose();
+
+        File file = new File("/home/pi/Controlpanel/controlpanel.xml");
+
+        new StoreXml().store(file);
+        new LoadXml().load(file);
+
+
+
         Set<Path> touchScreens = new InputDevices().getInputDevices();
         Map<Path, Integer> touchScreenMap = new HashMap<>();
 
         for (Path p : touchScreens) {
-            System.out.format("Touch screen: %s%n", p);
+//            System.out.format("Touch screen: %s%n", p);
             touchScreenMap.put(p, -1);
         }
 
@@ -75,8 +94,8 @@ public class CorleoneControlpanel {
                 GraphicsDevice gd = gs[j];
 
                 Rectangle r = gd.getDefaultConfiguration().getBounds();
-                System.out.format("x: %d, y: %d, w: %d, h: %d%n", r.x, r.y, r.width, r.height);
-                System.out.flush();
+//                System.out.format("x: %d, y: %d, w: %d, h: %d%n", r.x, r.y, r.width, r.height);
+//                System.out.flush();
 /*
                 JFrame frame = new JFrame(gd.getDefaultConfiguration());
                 frame.setTitle("I'm on monitor #" + j);
@@ -87,11 +106,6 @@ public class CorleoneControlpanel {
 
 
                 MainJFrame mainFrame = new MainJFrame(j, r);
-                if (j==0) {
-                    LineIcon.initialize(mainFrame);
-                    TurnoutIcon.initialize(mainFrame);
-                    TurntableIcon.initialize(mainFrame);
-                }
                 mainFrame.setVisible(true);
                 mainFrame.init();
 

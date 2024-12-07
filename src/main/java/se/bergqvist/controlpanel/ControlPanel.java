@@ -6,18 +6,25 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.JPanel;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import se.bergqvist.controlpanel.icons.Icon;
 import se.bergqvist.controlpanel.icons.IconData;
 import se.bergqvist.log.Logger;
+import se.bergqvist.xml.LoadXml;
+import se.bergqvist.xml.StoreXml;
 
 /**
  * Control panel.
@@ -147,47 +154,6 @@ public final class ControlPanel {
             for (int x=0; x < RASTER_NUM_X; x++) {
                 iconData[x][y] = Icon.get(Icon.Type.Empty).get(0).createIconData();
             }
-        }
-
-        final String schemaVersion = "-1-0";
-
-        File file = new File("/home/pi/Controlpanel/controlpanel.xml");
-
-        try {
-            Element root = new Element("layout-config");
-            root.setAttribute("noNamespaceSchemaLocation",
-                    "http://jmri.org/xml/schema/layout" + schemaVersion + ".xsd",
-                    org.jdom2.Namespace.getNamespace("xsi",
-                            "http://www.w3.org/2001/XMLSchema-instance"));
-            Document doc = newDocument(root);
-            writeXML(file, doc);
-        } catch (java.io.FileNotFoundException ex3) {
-            LOG.error("FileNotFound error writing file: " + ex3.getLocalizedMessage());
-        } catch (java.io.IOException ex2) {
-            Logger a;
-            LOG.error("IO error writing file: " + ex2.getLocalizedMessage());
-        }
-    }
-
-    static public Document newDocument(Element root) {
-        Document doc = new Document(root);
-//        addDefaultInfo(root);
-        return doc;
-    }
-
-    public void writeXML(File file, Document doc) throws IOException, FileNotFoundException {
-        // ensure parent directory exists
-//        if (file.getParent() != null) {
-//            FileUtil.createDirectory(file.getParent());
-//        }
-        // write the result to selected file
-        try (FileOutputStream o = new FileOutputStream(file)) {
-            XMLOutputter fmt = new XMLOutputter();
-            fmt.setFormat(Format.getPrettyFormat()
-                    .setLineSeparator(System.getProperty("line.separator"))
-                    .setTextMode(Format.TextMode.TRIM_FULL_WHITE));
-            fmt.output(doc, o);
-            o.flush();
         }
     }
 
@@ -364,6 +330,35 @@ public final class ControlPanel {
             iconData[x][y] = Icon.get(Icon.Type.Line).get(5).createIconData();
             panel.repaint();
         }
+    }
+
+    public Element getXml() {
+        Element controlpanel = new Element("Controlpanel");
+        Element icons = new Element("Icons");
+
+        for (int y=0; y < RASTER_NUM_Y; y++) {
+            for (int x=0; x < RASTER_NUM_X; x++) {
+                IconData id = iconData[x][y];
+                Icon i = id.getIcon();
+                Element icon = new Element("Icon");
+                icon.setAttribute("x", Integer.toString(x));
+                icon.setAttribute("y", Integer.toString(y));
+                icon.setAttribute("type", i.getType().name());
+                icon.setAttribute("bits", Integer.toString(i.getBits()));
+/*
+                icon.setAttribute("x", Integer.toString(x));
+                icon.setAttribute("x", Integer.toString(x));
+                icon.setAttribute("x", Integer.toString(x));
+                icon.setAttribute("x", Integer.toString(x));
+*/
+                icons.addContent(icon);
+            }
+        }
+
+
+
+        controlpanel.addContent(icons);
+        return controlpanel;
     }
 
 

@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
  */
 public interface IconData {
 
+    Icon getIcon();
+
     void draw(Graphics2D g, int x, int y);
 
     void nextState();
