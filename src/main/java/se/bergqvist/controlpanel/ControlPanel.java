@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import org.jdom2.Document;
@@ -44,6 +45,9 @@ public final class ControlPanel {
     private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
 
     private final IconData[][] iconData = new IconData[RASTER_NUM_X][RASTER_NUM_Y];
+
+    private final List<IconWithPosition> _iconPalette = new ArrayList<>();
+    private IconWithPosition _selectedIcon;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
     int[][] turnouts = {
@@ -242,6 +246,9 @@ public final class ControlPanel {
             }
         }
 */
+        Stroke stroke = new BasicStroke(1.0f);
+        g.setStroke(stroke);
+
         int y = 500;
         for (LineIcon.Type type : LineIcon.Type.values()) {
             count = 0;
@@ -250,10 +257,21 @@ public final class ControlPanel {
 //            int i = 0;
             for (Icon icon : Icon.get(type)) {
                 int x = 100 + count++ * Icon.RASTER_SIZE;
+                icon.drawFrame(g, x, y);
                 icon.draw(g, x, y);
+                _iconPalette.add(new IconWithPosition(icon, x, y));
 //                System.out.format("Type: %s, i: %d, class: %s%n", type.name(), i++, icon.getClass());
             }
         }
+
+        if (_selectedIcon != null) {
+            g.setColor(Color.RED);
+            Stroke stroke2 = new BasicStroke(3.0f);
+            g.setStroke(stroke2);
+            _selectedIcon._icon.drawFrame(g, _selectedIcon._x, _selectedIcon._y);
+        }
+
+
 
         Icon turntable = Icon.get(Icon.Type.WyeSlip, 0);
         turntable.draw(g, 1200, 700);
@@ -292,7 +310,6 @@ public final class ControlPanel {
         Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g.setColor(Color.BLACK);
         g.setStroke(capRoundStroke);
-
         drawRaster(g);
 
         for (int y=0; y < RASTER_NUM_Y; y++) {
@@ -332,7 +349,18 @@ public final class ControlPanel {
             int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
             int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
             System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
-            iconData[x][y] = Icon.get(Icon.Type.Line).get(5).createIconData();
+            iconData[x][y] = _selectedIcon._icon.createIconData();
+            panel.repaint();
+        } else {
+            for (IconWithPosition ip : _iconPalette) {
+                if (ip._icon.isHit(ip._x, ip._y, ex, ey)) {
+                    _selectedIcon = ip;
+                    panel.repaint();
+                    return;
+                }
+            }
+            // If here, no hit
+           _selectedIcon = null;
             panel.repaint();
         }
     }
@@ -391,6 +419,20 @@ public final class ControlPanel {
 
         private static ControlPanel INSTANCE = new ControlPanel();
 
+    }
+
+
+    private static final class IconWithPosition {
+
+        private final Icon _icon;
+        private final int _x;
+        private final int _y;
+
+        private IconWithPosition(Icon icon, int x, int y) {
+            this._icon = icon;
+            this._x = x;
+            this._y = y;
+        }
     }
 
     private static final Logger LOG = new Logger(ControlPanel.class);

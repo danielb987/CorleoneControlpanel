@@ -157,6 +157,16 @@ public class TurnoutIcon extends Icon {
     }
 
     @Override
+    public void drawFrame(Graphics2D g, int x, int y) {
+        g.drawRect(x-1, y-1, SIZE+1, SIZE+1);
+    }
+
+    @Override
+    public boolean isHit(int x, int y, int hitX, int hitY) {
+        return hitX >= x && hitX <= x + SIZE && hitY >= y && hitY <= y + SIZE;
+    }
+
+    @Override
     public IconData createIconData() {
         return new TurnoutIconData(this);
     }

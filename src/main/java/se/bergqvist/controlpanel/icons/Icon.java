@@ -75,6 +75,10 @@ public abstract class Icon {
 
     public abstract void draw(Graphics2D g, int x, int y);
 
+    public abstract void drawFrame(Graphics2D g, int x, int y);
+
+    public abstract boolean isHit(int x, int y, int hitX, int hitY);
+
     public abstract IconData createIconData();
 
 }
