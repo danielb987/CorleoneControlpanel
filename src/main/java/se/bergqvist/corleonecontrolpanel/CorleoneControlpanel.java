@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JFrame;
+import se.bergqvist.config.Config;
 import se.bergqvist.controlpanel.icons.LineIcon;
 import se.bergqvist.controlpanel.icons.TurnoutIcon;
 import se.bergqvist.controlpanel.icons.TurntableIcon;
 import se.bergqvist.input.InputDevices;
 import se.bergqvist.touch.TouchManager;
 import se.bergqvist.xml.LoadXml;
-import se.bergqvist.xml.StoreXml;
 
 /**
  * Main program
@@ -34,9 +34,7 @@ public class CorleoneControlpanel {
         TurntableIcon.initialize(tempFrame);
         tempFrame.dispose();
 
-        File file = new File("/home/pi/Controlpanel/controlpanel.xml");
-
-        new StoreXml().store(file);
+        File file = new File(Config.get().getFilename());
         new LoadXml().load(file);
 
 

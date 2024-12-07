@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import javax.swing.JPanel;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -355,10 +356,30 @@ public final class ControlPanel {
             }
         }
 
-
-
         controlpanel.addContent(icons);
         return controlpanel;
+    }
+
+    public void loadXml(Element controlpanel) {
+        Element icons = controlpanel.getChild("Icons");
+        List<Element> iconList = icons.getChildren("Icon");
+        for (Element iconElement : iconList) {
+            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
+            int y = Integer.parseInt(iconElement.getAttributeValue("y"));
+            Icon.Type type = Icon.Type.valueOf(iconElement.getAttributeValue("type"));
+            int bits = Integer.parseInt(iconElement.getAttributeValue("bits"));
+/*
+            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
+            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
+            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
+            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
+            int x = iconElement.getAttributeValue("x");
+            int x = iconElement.getAttributeValue("x");
+*/
+            Icon i = Icon.get(type, bits);
+            IconData id = i.createIconData();
+            iconData[x][y] = id;
+        }
     }
 
 
