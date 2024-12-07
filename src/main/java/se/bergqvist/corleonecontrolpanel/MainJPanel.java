@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.touch.TouchEnum;
 import se.bergqvist.touch.TouchEvent;
+import se.bergqvist.touch.TouchManager;
 import se.bergqvist.touch.TouchManager.TouchListener;
 
 /**
@@ -61,6 +62,7 @@ public class MainJPanel extends JPanel implements MouseListener {
                 this.y = (int) (((double)event.getY()) * bounds.height / TOUCH_HEIGHT);
                 this.ex = event.getX();
                 this.ey = event.getY();
+                ControlPanel.get().event(x,y, this);
             }
             if (maxX < event.getX()) maxX = event.getX();
             if (maxY < event.getY()) maxY = event.getY();
@@ -141,6 +143,10 @@ public class MainJPanel extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent me) {
+        if (TouchManager.isTouchActive()) {
+            // System.out.format("Mouse pressed but touch active%n");
+            return;     // Touch so don't handle this as a mouse event
+        }
         mx = me.getX();
         my = me.getY();
 //        mx = me.getXOnScreen();
