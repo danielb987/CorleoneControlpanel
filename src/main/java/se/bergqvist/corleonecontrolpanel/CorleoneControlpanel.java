@@ -45,7 +45,7 @@ public class CorleoneControlpanel {
         Map<Path, Integer> touchScreenMap = new HashMap<>();
 
         for (Path p : touchScreens) {
-            System.out.format("Touch screen: %s%n", p);
+//            System.out.format("Touch screen: %s%n", p);
             touchScreenMap.put(p, -1);
         }
 
@@ -94,8 +94,8 @@ public class CorleoneControlpanel {
                 GraphicsDevice gd = gs[j];
 
                 Rectangle r = gd.getDefaultConfiguration().getBounds();
-                System.out.format("x: %d, y: %d, w: %d, h: %d%n", r.x, r.y, r.width, r.height);
-                System.out.flush();
+//                System.out.format("x: %d, y: %d, w: %d, h: %d%n", r.x, r.y, r.width, r.height);
+//                System.out.flush();
 /*
                 JFrame frame = new JFrame(gd.getDefaultConfiguration());
                 frame.setTitle("I'm on monitor #" + j);

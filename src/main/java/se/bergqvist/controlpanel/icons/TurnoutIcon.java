@@ -75,7 +75,7 @@ public class TurnoutIcon extends Icon {
         map.get(icon.getType()).add(icon);
         Icon i = _iconMap.computeIfAbsent(icon._type, (x) -> { return new HashMap<>(); }).put(icon._bits, icon);
         if (i != null) throw new IllegalArgumentException(String.format("Icon already in map. type: %s, bits: %8s", icon._type.name(), Integer.toBinaryString(icon._bits)));
-        System.out.format("Bits: 0b%s, %s%n", String.format("%8s",Integer.toBinaryString(icon._bits)).replace(" ", "0"), icon._type.name());
+//        System.out.format("Bits: 0b%s, %s%n", String.format("%8s",Integer.toBinaryString(icon._bits)).replace(" ", "0"), icon._type.name());
     }
 
     private TurnoutIcon(Component component, Type type, int bits, int bitClosed, int bitThrown) {
