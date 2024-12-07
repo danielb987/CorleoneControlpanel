@@ -147,6 +147,11 @@ public class LineIcon extends Icon {
     }
 
     @Override
+    public int getBits() {
+        return _bits;
+    }
+
+    @Override
     public void draw(Graphics2D g, int x, int y) {
         if (_type != Type.Empty) {
             g.drawImage(_image, x, y, null);
@@ -175,6 +180,11 @@ public class LineIcon extends Icon {
         @Override
         public void nextState() {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Icon getIcon() {
+            return _icon;
         }
 
     }
