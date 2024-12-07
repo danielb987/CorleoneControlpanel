@@ -319,15 +319,19 @@ public final class ControlPanel {
     }
 
     public void mousePressed(MouseEvent me, JPanel panel) {
-        int mx = me.getX();
-        int my = me.getY();
+        int x = me.getX();
+        int y = me.getY();
+        event(x, y, panel);
+    }
 
-        System.out.format("xx: %d, yy: %d%n", mx, my);
+    public void event(int ex, int ey, JPanel panel) {
 
-        if (mx > RASTER_X0 && mx < RASTER_MAX_X && my > RASTER_Y0 && my < RASTER_MAX_Y) {
-            int x = (mx - RASTER_X0) / Icon.RASTER_SIZE;
-            int y = (my - RASTER_Y0) / Icon.RASTER_SIZE;
-            System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, mx, my);
+        System.out.format("xx: %d, yy: %d%n", ex, ey);
+
+        if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
+            int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
+            int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
+            System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
             iconData[x][y] = Icon.get(Icon.Type.Line).get(5).createIconData();
             panel.repaint();
         }

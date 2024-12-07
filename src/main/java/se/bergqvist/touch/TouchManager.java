@@ -1,8 +1,8 @@
 package se.bergqvist.touch;
 
 import java.nio.file.Path;
-import static se.bergqvist.event.EventEnum.AbsoluteMiddleTouchX;
-import static se.bergqvist.event.EventEnum.AbsoluteMiddleTouchY;
+import java.util.ArrayList;
+import java.util.List;
 import se.bergqvist.event.EventManager;
 import se.bergqvist.event.EventManager.Event;
 import se.bergqvist.event.EventManager.EventListener;
@@ -18,6 +18,8 @@ public class TouchManager {
     public static final int DRAG_DELAY = 200; // 200 us
 //    public static final int DRAG_DELAY = 300; // 300 us
 
+    private static final List<MyListener> _listeners = new ArrayList<>();
+
 
     public interface TouchListener {
         void event(TouchEvent event);
@@ -31,9 +33,17 @@ public class TouchManager {
     }
 
 
+    public static boolean isTouchActive() {
+        for (MyListener l : _listeners) {
+            if (l._touchActive) return true;
+        }
+        return false;
+    }
+
     public static void create(Path path, TouchListener touchListener) {
         MyListener eventListener = new MyListener(touchListener);
         TouchManager tm = new TouchManager(path, eventListener);
+        _listeners.add(eventListener);
     }
 
     private TouchManager(Path path, EventListener eventListener) {
@@ -54,6 +64,7 @@ public class TouchManager {
         private boolean _hasMoved;
         private long _firstEventTime = System.currentTimeMillis();
         private long _lastEventTime = System.currentTimeMillis();
+        private boolean _touchActive = false;
 
         private MyListener(TouchListener touchListener) {
             this._touchListener = touchListener;
@@ -77,6 +88,7 @@ public class TouchManager {
                         _isButtonDown = false;
                         _touchState = TouchState.None;
                         _isButtonUpEvent = false;
+                        _touchActive = false;
                     } else if (_touchState == TouchState.Click && DRAG_DELAY <= (_lastEventTime - _firstEventTime)) {
                         _touchState = TouchState.Drag;
                         TouchEvent evt = new TouchEvent(TouchEnum.StartDrag, _x, _y);
@@ -91,6 +103,7 @@ public class TouchManager {
                 case ButtonTouch -> {
                     if (event.value == 1) {
                         _isButtonDownEvent = true;
+                        _touchActive = true;
                     } else if (event.value == 0) {
                         _isButtonUpEvent = true;
                     }
