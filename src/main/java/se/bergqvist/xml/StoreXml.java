@@ -23,7 +23,7 @@ public class StoreXml {
         try {
             Element root = createXmlTree();
             root.setAttribute("noNamespaceSchemaLocation",
-                    "schema/controlpanel" + schemaVersion + ".xsd",
+                    "schema/root" + schemaVersion + ".xsd",
                     org.jdom2.Namespace.getNamespace("xsi",
                             "http://www.w3.org/2001/XMLSchema-instance"));
             Document doc = newDocument(root);
