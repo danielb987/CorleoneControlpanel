@@ -5,7 +5,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -20,8 +19,6 @@ import se.bergqvist.log.Logger;
  * @author Daniel Bergqvist
  */
 public final class ControlPanel {
-
-//    private static final ControlPanel INSTANCE = new ControlPanel();
 
     private static final int RASTER_X0 = 20;
     private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
@@ -327,15 +324,7 @@ public final class ControlPanel {
         }
     }
 
-    public void mousePressed(MouseEvent me, JPanel panel) {
-        int x = me.getX();
-        int y = me.getY();
-        event(x, y, panel);
-    }
-
     public void event(int ex, int ey, JPanel panel) {
-
-        System.out.format("xx: %d, yy: %d%n", ex, ey);
 
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
             if (_selectedIcon != null) {

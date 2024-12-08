@@ -56,7 +56,18 @@ public class MainJPanel extends JPanel implements MouseListener {
     }
 
     public void touchEvent(TouchEvent event) {
-        System.out.format("%s: %d, %d%n", event.getType(), event.getX(), event.getY());
+        System.out.format("touchEvent: %s: %d, %d%n", event.getType(), event.getX(), event.getY());
+        this.x = (int) (((double)event.getX()) * bounds.width / TOUCH_WIDTH);
+        this.y = (int) (((double)event.getY()) * bounds.height / TOUCH_HEIGHT);
+        this.ex = event.getX();
+        this.ey = event.getY();
+        if (maxX < event.getX()) maxX = event.getX();
+        if (maxY < event.getY()) maxY = event.getY();
+        handleEvent(event.getType(), x, y);
+    }
+
+    public void handleEvent(TouchEnum type, int x, int y) {
+        System.out.format("handleEvent: %s: %d, %d%n", type, x, y);
         System.out.flush();
 //        if (event.getType() == TouchEnum.StartDrag
 //                || event.getType() == TouchEnum.Drag
@@ -64,18 +75,11 @@ public class MainJPanel extends JPanel implements MouseListener {
 
             if (touchPanelButton.isHit(x, y)) {
                 System.out.println("HIT!!!");
-            } else if (bounds != null) {
-                this.x = (int) (((double)event.getX()) * bounds.width / TOUCH_WIDTH);
-                this.y = (int) (((double)event.getY()) * bounds.height / TOUCH_HEIGHT);
-                this.ex = event.getX();
-                this.ey = event.getY();
+            } else {
                 ControlPanel.get().event(x,y, this);
             }
-            if (maxX < event.getX()) maxX = event.getX();
-            if (maxY < event.getY()) maxY = event.getY();
-            this.repaint();
+//            this.repaint();
 //        }
-//        touchEvent(event);
     }
 
     @Override
@@ -160,9 +164,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         }
         mx = me.getX();
         my = me.getY();
-//        mx = me.getXOnScreen();
-//        my = me.getYOnScreen();
-        ControlPanel.get().mousePressed(me, this);
+        handleEvent(TouchEnum.Click, mx, my);
     }
 
     @Override
