@@ -33,6 +33,7 @@ public final class ControlPanel {
     private IconWithPosition _selectedIcon;
 
     private boolean _drawOldControlPanel = false;
+    private boolean _drawOldControlPanelAfter = false;
     private boolean _drawNewControlPanel = true;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
@@ -148,6 +149,48 @@ public final class ControlPanel {
         }
     }
 
+    private void drawOldControlpanel(Graphics2D g) {
+        Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+        Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g.setColor(Color.BLACK);
+        g.setStroke(capRoundStroke);
+        for (int[] line : lines) {
+            int offset = 1500 - line[0] * 330;
+            g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
+        }
+//        for (int display=0; display < 5; display++) {
+//        }
+
+//        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+
+        // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
+        for (int[] turnout : turnouts) {
+            boolean thrown = Math.random() < 0.5;
+            int offset = 1500 - turnout[2] * 330;
+            if (thrown) {
+                g.setColor(Color.WHITE);
+                g.setStroke(capButtStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+                g.setColor(Color.BLACK);
+                g.setStroke(capRoundStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+            } else {
+                g.setColor(Color.WHITE);
+                g.setStroke(capButtStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+                g.setColor(Color.BLACK);
+                g.setStroke(capRoundStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+            }
+/*
+            g.setColor(Color.RED);
+            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+            g.setColor(Color.GREEN);
+            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+*/
+        }
+    }
+
     public void draw(Graphics2D g) {
 
         Color oldColor = g.getColor();
@@ -165,45 +208,7 @@ public final class ControlPanel {
         }
 */
         if (_drawOldControlPanel) {
-            Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
-            Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g.setColor(Color.BLACK);
-            g.setStroke(capRoundStroke);
-            for (int[] line : lines) {
-                int offset = 1500 - line[0] * 330;
-                g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
-            }
-    //        for (int display=0; display < 5; display++) {
-    //        }
-
-    //        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
-
-            // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
-            for (int[] turnout : turnouts) {
-                boolean thrown = Math.random() < 0.5;
-                int offset = 1500 - turnout[2] * 330;
-                if (thrown) {
-                    g.setColor(Color.WHITE);
-                    g.setStroke(capButtStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                    g.setColor(Color.BLACK);
-                    g.setStroke(capRoundStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-                } else {
-                    g.setColor(Color.WHITE);
-                    g.setStroke(capButtStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-                    g.setColor(Color.BLACK);
-                    g.setStroke(capRoundStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                }
-    /*
-                g.setColor(Color.RED);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                g.setColor(Color.GREEN);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-    */
-            }
+            drawOldControlpanel(g);
         }
 
 /*
@@ -289,6 +294,10 @@ public final class ControlPanel {
 
 
         drawControlPanel(g);
+
+        if (_drawOldControlPanelAfter) {
+            drawOldControlpanel(g);
+        }
 
         g.setColor(oldColor);
         g.setStroke(oldStroke);
