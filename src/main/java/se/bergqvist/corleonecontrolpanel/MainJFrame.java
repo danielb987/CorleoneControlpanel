@@ -1,17 +1,11 @@
 package se.bergqvist.corleonecontrolpanel;
 
-import se.bergqvist.event.EventTypeEnum;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.swing.JFrame;
 import se.bergqvist.config.Config;
-import se.bergqvist.event.EventEnum;
 import se.bergqvist.touch.TouchManager;
 import se.bergqvist.xml.StoreXml;
 
@@ -27,23 +21,10 @@ import se.bergqvist.xml.StoreXml;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    private final int screen;
-
     /**
      * Creates new form MainJFrame
      */
-    public MainJFrame(int screen, Rectangle bounds) {
-        this.screen = screen;
-/*
-        if (screen == 0) {
-//        if (screen == 1) {
-            mainJPanel = new MainJPanel(this);
-            getContentPane().add(mainJPanel);
-            pack();
-        } else {
-            initComponents();
-        }
-*/
+    public MainJFrame(Rectangle bounds) {
         initComponents();
         setBounds(bounds);
 //        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -61,6 +42,10 @@ public class MainJFrame extends javax.swing.JFrame {
 //        Thread t = new Thread(this::listenToEvents);
 //        t.setDaemon(true);
 //        t.start();
+    }
+
+    public void setShowSelectScreen(boolean show) {
+        ((MainJPanel)mainJPanel).setShowSelectScreen(show);
     }
 
     public TouchManager.TouchListener getTouchListener() {

@@ -5,16 +5,16 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import se.bergqvist.config.Config;
+import se.bergqvist.config.Config.ScreenConfig;
 import se.bergqvist.controlpanel.icons.LineIcon;
 import se.bergqvist.controlpanel.icons.TurnoutIcon;
 import se.bergqvist.controlpanel.icons.TurntableIcon;
-import se.bergqvist.input.InputDevices;
 import se.bergqvist.touch.TouchManager;
+import se.bergqvist.touch.TouchManager.EventListener;
 import se.bergqvist.xml.LoadXml;
 
 /**
@@ -24,36 +24,20 @@ import se.bergqvist.xml.LoadXml;
  */
 public class CorleoneControlpanel {
 
+    private static final List<MainJFrame> _frames = new ArrayList<>();
+
+
+    public static void setShowSelectScreen(boolean show) {
+        for (MainJFrame f : _frames) {
+            f.setShowSelectScreen(show);
+        }
+    }
+
+    public static void switchTouchscreen() {
+        Config.get().switchTouchscreen();
+    }
+
     public static void main(String[] args) {
-
-        Map<Path, String> touchScreens = new InputDevices().getInputDevices();
-        Map<Path, Integer> touchScreenMap = new HashMap<>();
-
-        for (Path p : touchScreens.keySet()) {
-//            System.out.format("Touch screen: %s%n", p);
-            touchScreenMap.put(p, -1);
-        }
-/*
-        for (Path p : touchScreens.keySet()) {
-//            if (p.toString().equals("/dev/input/event5")) {
-            if (p.toString().equals("/dev/input/event6")) {
-                touchScreenMap.put(p, 0);
-            }
-        }
-*/
-        // We need a temporary frame to create icon images
-        JFrame tempFrame = new JFrame();
-        tempFrame.pack();
-        LineIcon.initialize(tempFrame);
-        TurnoutIcon.initialize(tempFrame);
-        TurntableIcon.initialize(tempFrame);
-        tempFrame.dispose();
-
-        File file = new File(Config.get().getFilename());
-        new LoadXml().load(file);
-
-        // TODO:
-        // Save and restore map between touch and screen
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -80,6 +64,18 @@ public class CorleoneControlpanel {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
+
+            // We need a temporary frame to create icon images
+            JFrame tempFrame = new JFrame();
+            tempFrame.pack();
+            LineIcon.initialize(tempFrame);
+            TurnoutIcon.initialize(tempFrame);
+            TurntableIcon.initialize(tempFrame);
+            tempFrame.dispose();
+
+            // TODO:
+            // Save and restore map between touch and screen
+
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] gs = ge.getScreenDevices();
 
@@ -101,40 +97,26 @@ public class CorleoneControlpanel {
 */
 
 
-                MainJFrame mainFrame = new MainJFrame(j, r);
-                mainFrame.setVisible(true);
+                MainJFrame mainFrame = new MainJFrame(r);
+//                mainFrame.setVisible(true);
                 mainFrame.init();
+                _frames.add(mainFrame);
 
-
-                Path p = null;
-                Path pFree = null;
-                for (var entry : touchScreenMap.entrySet()) {
-                    if (entry.getValue() == r.x) p = entry.getKey();
-                    if (entry.getValue() == -1) pFree = entry.getKey();
-                }
-                // System.out.format("%d: p: %s, pFree: %s%n", j, p, pFree);
-                if (p == null) p = pFree;
-
-                touchScreenMap.remove(p);
-/*
-                TouchListener listener = new TouchListener() {
-                    @Override
-                    public void event(TouchEvent event) {
-                    }
-                };
-                TouchManager.create(p, listener);
-*/
-                if (p != null)
-                TouchManager.create(p, mainFrame.getTouchListener());
-//                touchScreenMap.put(p, -1);
+                ScreenConfig sc = new ScreenConfig(r.x, mainFrame, mainFrame.getTouchListener());
+                Config.get().addScreenConfig(sc);
             }
 
+            File file = new File(Config.get().getFilename());
+            new LoadXml().load(file);
 
-/*
-            MainJFrame mainFrame = new MainJFrame();
-            mainFrame.setVisible(true);
-            mainFrame.init();
-*/
+            for (ScreenConfig sc : Config.get().getScreenConfigs())  {
+                Path path = Config.get().getPathForTouchscreen(sc.getPosition());
+                System.out.format("Path: %s%n", path);
+                EventListener listener = TouchManager.create(path, sc.getTouchListener());
+                Config.get().setListenerForTouchscreen(path, listener);
+                sc.getFrame().setVisible(true);
+            }
+
         });
     }
 }

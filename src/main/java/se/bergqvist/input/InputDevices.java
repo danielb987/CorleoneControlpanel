@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import se.bergqvist.config.Config.TouchscreenConfig;
 
 /**
  * The list of input devices.
@@ -22,9 +23,9 @@ import java.util.Set;
  */
 public class InputDevices {
 
-    public Map<Path, String> getInputDevices() {
+    public List<TouchscreenConfig> getInputDevices() {
 
-        Map<Path, String> devices = new HashMap<>();
+        List<TouchscreenConfig> devices = new ArrayList<>();
 
         try {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("/dev/input"))) {
@@ -35,7 +36,7 @@ public class InputDevices {
 //                        System.out.println(path.getFileName());
                         String devPath = callUdevadm(filename);
                         if (devPath != null) {
-                            devices.put(path, devPath);
+                            devices.add(new TouchscreenConfig(path, devPath));
                         }
                     }
                 }
@@ -91,6 +92,10 @@ public class InputDevices {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
 	}
+
+        if (isTouchScreen) {
+            System.out.format("DevPath: %s%n", devPath);
+        }
 
         return isTouchScreen ? devPath : null;
     }

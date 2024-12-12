@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
@@ -16,6 +14,7 @@ import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.touch.TouchEnum;
 import se.bergqvist.touch.TouchEvent;
 import se.bergqvist.touch.TouchManager;
+import se.bergqvist.touch.TouchManager.EventListener;
 import se.bergqvist.touch.TouchManager.TouchListener;
 
 /**
@@ -28,9 +27,7 @@ public class MainJPanel extends JPanel implements MouseListener {
     private static final int TOUCH_WIDTH = 16380;
     private static final int TOUCH_HEIGHT = 9600;
 
-    private Button touchPanelButton;
-
-//    private static final ControlPanel controlPanel = ControlPanel.get();
+    private Button _touchPanelButton;
 
     private final MainJFrame _frame;
 
@@ -41,14 +38,17 @@ public class MainJPanel extends JPanel implements MouseListener {
     private Graphics2D bufferGraphics;
     private Image offscreenImage;
     private Rectangle bounds;
+    private boolean _showSelectScreen;
 
 
     public MainJPanel(MainJFrame frame) {
         this._frame = frame;
         this.addMouseListener(this);
-//        this.repaint();
-//        graphics.setStroke(new BasicStroke(0.1f));
-//        graphics.setColor(Color.black);
+    }
+
+    public void setShowSelectScreen(boolean show) {
+        _showSelectScreen = show;
+        repaint();
     }
 
     public TouchListener getTouchListener() {
@@ -63,22 +63,29 @@ public class MainJPanel extends JPanel implements MouseListener {
         this.ey = event.getY();
         if (maxX < event.getX()) maxX = event.getX();
         if (maxY < event.getY()) maxY = event.getY();
-        handleEvent(event.getType(), x, y);
+        handleEvent(event.getType(), x, y, event.getListener());
     }
 
-    public void handleEvent(TouchEnum type, int x, int y) {
+    public void handleEvent(TouchEnum type, int x, int y, EventListener listener) {
         System.out.format("handleEvent: %s: %d, %d%n", type, x, y);
         System.out.flush();
+
+        if (_showSelectScreen) {
+            CorleoneControlpanel.switchTouchscreen();
+            CorleoneControlpanel.setShowSelectScreen(false);
+            return;
+        }
+
 //        if (event.getType() == TouchEnum.StartDrag
 //                || event.getType() == TouchEnum.Drag
 //                || event.getType() == TouchEnum.EndDrag) {
 
-            if (touchPanelButton.isHit(x, y)) {
+            if (_touchPanelButton.isHit(x, y)) {
                 System.out.println("HIT!!!");
+                CorleoneControlpanel.setShowSelectScreen(true);
             } else {
                 ControlPanel.get().event(x,y, this);
             }
-//            this.repaint();
 //        }
     }
 
@@ -102,16 +109,27 @@ public class MainJPanel extends JPanel implements MouseListener {
         }
 
 
-//      bufferGraphics.drawRect(0, 0, bounds.width-1, bounds.height-1);
-
         // Vit bakgrundsfärg
         bufferGraphics.setColor(Color.WHITE);
         bufferGraphics.fillRect(0, 0, bounds.width, bounds.height);
 
         bufferGraphics.setColor(Color.BLACK);
-//        bufferGraphics.drawLine(0, 0, bounds.width, bounds.height);
 
-        ControlPanel.get().draw(bufferGraphics);
+        if (_showSelectScreen) {
+            Font oldFont = bufferGraphics.getFont();
+            bufferGraphics.setFont(new Font("Verdana", Font.PLAIN, 60));
+            bufferGraphics.drawString("Touchscreens have been switched", 500, 500);
+            bufferGraphics.setFont(oldFont);
+        } else {
+            ControlPanel.get().draw(bufferGraphics);
+
+            if (_touchPanelButton == null) {
+                _touchPanelButton = new Button(g, "Touch", 0, 0, 120, 50);
+            }
+            _touchPanelButton.draw(bufferGraphics);
+        }
+
+        g.drawImage(offscreenImage, 0, 0, this);
 /*
         bufferGraphics.setColor(Color.RED);
         bufferGraphics.drawLine(0, my, bounds.width, my);
@@ -122,9 +140,6 @@ public class MainJPanel extends JPanel implements MouseListener {
         bufferGraphics.drawLine(x, 0, x, bounds.height);
 */
 
-////        bufferGraphics.drawRect(2, 2, 1916, 1076);
-
-////        draw(bufferGraphics, false, null, 0, 0, 0, 0);
 /*
         Font font = new Font("Verdana", Font.PLAIN, 12);
         bufferGraphics.setFont(font);
@@ -145,11 +160,6 @@ public class MainJPanel extends JPanel implements MouseListener {
         bufferGraphics.drawString(str, 2, 90);
 //        System.out.format("ey: %d, my: %d, height: %d, TH: %1.0f%n", ey, my, bounds.height, touchHeight);
 */
-        if (touchPanelButton == null) {
-            touchPanelButton = new Button(g, "Touch", 0, 0, 120, 50);
-        }
-        touchPanelButton.draw(bufferGraphics);
-        g.drawImage(offscreenImage, 0, 0, this);
     }
 
     @Override
@@ -164,7 +174,7 @@ public class MainJPanel extends JPanel implements MouseListener {
         }
         mx = me.getX();
         my = me.getY();
-        handleEvent(TouchEnum.Click, mx, my);
+        handleEvent(TouchEnum.Click, mx, my, null);
     }
 
     @Override
