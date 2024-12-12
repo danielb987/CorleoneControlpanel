@@ -40,7 +40,6 @@ public class TouchManager {
         return false;
     }
 
-    public static void create(Path path, TouchListener touchListener) {
     public static EventListener create(Path path, TouchListener touchListener) {
         MyListener eventListener = new MyListener(touchListener);
         EventManager.create(path, eventListener);
