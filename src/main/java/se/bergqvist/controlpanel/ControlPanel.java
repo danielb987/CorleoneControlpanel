@@ -3,7 +3,9 @@ package se.bergqvist.controlpanel;
 import se.bergqvist.controlpanel.icons.LineIcon;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public final class ControlPanel {
     private IconWithPosition _selectedIcon;
 
     private boolean _drawOldControlPanel = false;
-    private boolean _drawOldControlPanelAfter = false;
+    private boolean _drawOldControlPanelAfter = true;
     private boolean _drawNewControlPanel = true;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
@@ -45,7 +47,7 @@ public final class ControlPanel {
         {112, 0, 3, 188, 339, 169, 339, 175, 352, 0},
         {113, 0, 3, 235, 293, 216, 293, 222, 306, 0},
         {114, 0, 3, 281, 247, 262, 247, 268, 260, 0},
-        {115, 0, 4, 289, 155, 270, 155, 276, 142, 0},
+        {115, 0, 4, 289, 155, 270, 155, 276, 142, 0, 40, 0},
         {121, 0, 2, 40, 201, 59, 201, 53, 188, 0},
         {122, 0, 3, 281, 201, 262, 201, 268, 188, 0},
         {123, 0, 3, 62, 247, 81, 247, 75, 234, 0},
@@ -58,22 +60,22 @@ public final class ControlPanel {
         {212, 0, 2, 40, 247, 59, 247, 53, 260, 0},
         {213, 0, 2, 86, 293, 105, 293, 99, 306, 0},
         {214, 0, 2, 132, 339, 151, 339, 145, 352, 0},
-        {215, 0, 2, 144, 98, 163, 98, 157, 85, 0},
+        {215, 0, 2, 144, 98, 163, 98, 157, 85, 0, 30, -30},
         {411, 0, 1, 280, 201, 261, 201, 267, 188, 0},
         {412, 0, 1, 281, 247, 262, 247, 268, 260, 0},
         {413, 0, 1, 235, 293, 216, 293, 222, 306, 0},
         {414, 0, 1, 189, 339, 170, 339, 176, 352, 0},
-        {415, 0, 1, 206, 127, 225, 127, 219, 140, 0},
-        {421, 0, 1, 177, 98, 158, 98, 164, 85, 0},
+        {415, 0, 1, 206, 127, 225, 127, 219, 140, 0, 0, -20},
+        {421, 0, 1, 177, 98, 158, 98, 164, 85, 0, -10, -40},
         {422, 415, 1, 234, 155, 215, 155, 221, 142, 1},
-        {511, 512, 0, 40, 247, 59, 247, 53, 234, 0},
-        {512, 0, 0, 86, 201, 67, 201, 73, 214, 0},
+        {511, 512, 0, 40, 247, 59, 247, 53, 234, 0, -10, 0},
+        {512, 0, 0, 86, 201, 67, 201, 73, 214, 0, -10, 0},
         {513, 0, 0, 121, 201, 140, 201, 134, 214, 0},
         {514, 513, 0, 167, 247, 148, 247, 154, 234, 0},
-        {711, 712, 0, 235, 314, 235, 333, 248, 327, 0},
-        {712, 0, 0, 281, 360, 281, 341, 268, 347, 0},
-        {713, 0, 0, 281, 395, 281, 414, 268, 408, 0},
-        {714, 713, 0, 235, 441, 235, 422, 248, 428, 1},
+        {711, 712, 0, 235, 314, 235, 333, 248, 327, 0, 10, 25},
+        {712, 0, 0, 281, 360, 281, 341, 268, 347, 0, 10, 25},
+        {713, 0, 0, 281, 395, 281, 414, 268, 408, 0, 10, 40},
+        {714, 713, 0, 235, 441, 235, 422, 248, 428, 1, 10, 40},
     };
 
     // display, x1, y1, x2, y2
@@ -154,6 +156,7 @@ public final class ControlPanel {
         Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g.setColor(Color.BLACK);
         g.setStroke(capRoundStroke);
+        if (false)
         for (int[] line : lines) {
             int offset = 1500 - line[0] * 330;
             g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
@@ -164,6 +167,7 @@ public final class ControlPanel {
 //        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
 
         // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
+        if (false)
         for (int[] turnout : turnouts) {
             boolean thrown = Math.random() < 0.5;
             int offset = 1500 - turnout[2] * 330;
@@ -189,6 +193,37 @@ public final class ControlPanel {
             g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
 */
         }
+
+        for (int[] turnout : turnouts) {
+            int offset = 1500 - turnout[2] * 330;
+
+            int xc = offset+turnout[3];
+            int yc = turnout[4];
+            int r = 10;
+            if (turnout.length > 10) {
+                xc += turnout[10];
+                yc += turnout[11];
+            }
+            g.fillOval(xc-r, yc-r, r*2, r*2);
+            g.setColor(Color.BLUE);
+            for (int y=0; y < RASTER_NUM_Y; y++) {
+                for (int x=0; x < RASTER_NUM_X; x++) {
+                    Point pos = getIconPosition(x, y);
+                    if (iconData[x][y].getIcon().isHit(pos.x, pos.y, xc, yc)) {
+                        iconData[x][y].getIcon().drawFrame(g, pos.x, pos.y);
+                    }
+//                    iconData[x][y].draw(g, px, py);
+                }
+            }
+            g.setColor(Color.BLACK);
+            g.drawString(Integer.toString(turnout[0]), xc-10, yc+30);
+        }
+    }
+
+    private Point getIconPosition(int x, int y) {
+        int px = RASTER_X0 + Icon.RASTER_MARGIN + x * Icon.RASTER_SIZE;
+        int py = RASTER_Y0 + Icon.RASTER_MARGIN + y * Icon.RASTER_SIZE;
+        return new Point(px,py);
     }
 
     public void draw(Graphics2D g) {
