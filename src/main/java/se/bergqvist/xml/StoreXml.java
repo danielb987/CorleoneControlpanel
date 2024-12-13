@@ -8,6 +8,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import se.bergqvist.config.Config;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.log.Logger;
 
@@ -58,8 +59,7 @@ public class StoreXml {
 
     private Element createXmlTree() {
         Element root = new Element("Controlpanel");
-        Element configuration = new Element("Configuration");
-        root.addContent(configuration);
+        root.addContent(Config.get().getXml());
         root.addContent(ControlPanel.get().getXml());
         Element views = new Element("Views");
         root.addContent(views);

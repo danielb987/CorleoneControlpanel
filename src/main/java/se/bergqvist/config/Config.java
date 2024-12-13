@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jdom2.Element;
+import se.bergqvist.controlpanel.icons.Icon;
+import se.bergqvist.controlpanel.icons.IconData;
 import se.bergqvist.corleonecontrolpanel.MainJFrame;
 import se.bergqvist.input.InputDevices;
-import se.bergqvist.touch.TouchManager;
 import se.bergqvist.touch.TouchManager.EventListener;
 import se.bergqvist.touch.TouchManager.TouchListener;
 
@@ -25,7 +27,7 @@ public class Config {
 
     private final List<ScreenConfig> _screenConfigs = new ArrayList<>();
 
-    private final List<TouchscreenConfig> _touchScreenConfigs =
+    private final List<TouchscreenConfig> _touchscreenConfigs =
             new InputDevices().getInputDevices();
 
 
@@ -46,12 +48,12 @@ public class Config {
     }
 
     public Path getPathForTouchscreen(int pos) {
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
             if (tc._position == pos) {
                 return tc._path;
             }
         }
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
             if (tc._position == -1) {
                 tc._position = pos;
                 return tc._path;
@@ -61,7 +63,7 @@ public class Config {
     }
 
     public void setPathForTouchScreen(Path path, int pos) {
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
             if (tc._path.equals(path)) {
                 tc._position = pos;
             }
@@ -69,33 +71,64 @@ public class Config {
     }
 
     public void switchTouchscreen() {
-        Map<Integer, TouchListener> listeners = new HashMap<>();
+        Map<Integer, Map.Entry<Integer, TouchListener>> listeners = new HashMap<>();
         int count = 0;
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
-            listeners.put(count++, tc._listener.getTouchListener());
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
+            listeners.put(count++, new HashMap.SimpleEntry<>(tc._position, tc._listener.getTouchListener()));
         }
-        _touchScreenConfigs.get(0)._listener.setTouchListener(listeners.get(1));
-        _touchScreenConfigs.get(1)._listener.setTouchListener(listeners.get(0));
+        _touchscreenConfigs.get(0)._position = listeners.get(1).getKey();
+        _touchscreenConfigs.get(0)._listener.setTouchListener(listeners.get(1).getValue());
+        _touchscreenConfigs.get(1)._position = listeners.get(0).getKey();
+        _touchscreenConfigs.get(1)._listener.setTouchListener(listeners.get(0).getValue());
     }
 
     public void setTouchscreen(EventListener listener, int x) {
         Map<Integer, TouchListener> listeners = new HashMap<>();
         int count = 0;
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
             if (tc._position == x && tc._listener == listener) {
                 return;
             }
             listeners.put(count++, tc._listener.getTouchListener());
         }
-        _touchScreenConfigs.get(0)._listener.setTouchListener(listeners.get(1));
-        _touchScreenConfigs.get(1)._listener.setTouchListener(listeners.get(0));
+        _touchscreenConfigs.get(0)._listener.setTouchListener(listeners.get(1));
+        _touchscreenConfigs.get(1)._listener.setTouchListener(listeners.get(0));
     }
 
     public void setListenerForTouchscreen(Path path, EventListener listener) {
-        for (TouchscreenConfig tc : _touchScreenConfigs) {
+        for (TouchscreenConfig tc : _touchscreenConfigs) {
             if (tc._path.equals(path)) {
                 tc._listener = listener;
             }
+        }
+    }
+
+    public Element getXml() {
+        Element configuration = new Element("Configuration");
+        Element screenConfigs = new Element("TouchscreenConfigs");
+        for (TouchscreenConfig sc : _touchscreenConfigs) {
+            Element screenConfig = new Element("TouchscreenConfig");
+            screenConfig.addContent(new Element("Position").addContent(Integer.toString(sc._position)));
+            screenConfig.addContent(new Element("DevPath").addContent(sc._devPath));
+            screenConfigs.addContent(screenConfig);
+        }
+        configuration.addContent(screenConfigs);
+        return configuration;
+    }
+
+    public void loadXml(Element configuration) {
+        Element touchscreenConfigs = configuration.getChild("TouchscreenConfigs");
+        List<Element> touchscreenConfig = touchscreenConfigs.getChildren("TouchscreenConfig");
+        for (Element tcElement : touchscreenConfig) {
+            int position = Integer.parseInt(tcElement.getChildTextTrim("Position"));
+            String devPath = tcElement.getChildTextTrim("DevPath");
+            for (TouchscreenConfig tc : _touchscreenConfigs) {
+                if (tc._devPath.equals(devPath)) {
+                    tc._position = position;
+                }
+                System.out.format("Old: Pos: %d, devPath: %s%n", tc._position, tc._devPath);
+            }
+            System.out.format("Pos: %d, devPath: %s%n", position, devPath);
         }
     }
 
