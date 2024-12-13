@@ -20,6 +20,14 @@ public interface IconData {
 
     void setAddress(int address);
 
+    int getMasterAddress();
+
+    void setMasterAddress(int address);
+
+    boolean isInverted();
+
+    void setInverted(boolean inverted);
+
     Element getXml(int x, int y);
 
     void loadXml(Element iconData);

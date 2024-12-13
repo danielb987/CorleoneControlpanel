@@ -211,7 +211,10 @@ public final class ControlPanel {
                     Point pos = getIconPosition(x, y);
                     if (iconData[x][y].getIcon().isHit(pos.x, pos.y, xc, yc)) {
                         iconData[x][y].getIcon().drawFrame(g, pos.x, pos.y);
+    // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
 //                        iconData[x][y].setAddress(turnout[0]);
+//                        iconData[x][y].setMasterAddress(turnout[1]);
+//                        iconData[x][y].setInverted(turnout[9] == 1);
                     }
 //                    iconData[x][y].draw(g, px, py);
                 }

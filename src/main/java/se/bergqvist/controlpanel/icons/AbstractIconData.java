@@ -11,6 +11,8 @@ import org.jdom2.Element;
 public abstract class AbstractIconData implements IconData {
 
     private int _address;
+    private int _masterAddress;
+    private boolean _inverted;
 
     @Override
     public int getAddress() {
@@ -20,6 +22,26 @@ public abstract class AbstractIconData implements IconData {
     @Override
     public void setAddress(int address) {
         this._address = address;
+    }
+
+    @Override
+    public int getMasterAddress() {
+        return _masterAddress;
+    }
+
+    @Override
+    public void setMasterAddress(int address) {
+        this._masterAddress = address;
+    }
+
+    @Override
+    public boolean isInverted() {
+        return _inverted;
+    }
+
+    @Override
+    public void setInverted(boolean inverted) {
+        this._inverted = inverted;
     }
 
     @Override
@@ -34,7 +56,12 @@ public abstract class AbstractIconData implements IconData {
         if (_address != 0) {
             icon.setAttribute("Address", Integer.toString(_address));
         }
-//        iconData.addContent(new Element("DevPath").addContent(sc._devPath));
+        if (_masterAddress != 0) {
+            icon.setAttribute("MasterAddress", Integer.toString(_masterAddress));
+        }
+        if (_inverted) {
+            icon.setAttribute("Inverted", "yes");
+        }
         return icon;
     }
 
@@ -43,6 +70,14 @@ public abstract class AbstractIconData implements IconData {
         String addr = iconData.getAttributeValue("Address");
         if (addr != null) {
             _address = Integer.parseInt(addr);
+        }
+        String masterAddr = iconData.getAttributeValue("MasterAddress");
+        if (masterAddr != null) {
+            _masterAddress = Integer.parseInt(masterAddr);
+        }
+        String invertedElem = iconData.getAttributeValue("Inverted");
+        if (invertedElem != null) {
+            _inverted = invertedElem.equals("yes");
         }
         System.out.format("Address: %d%n", _address);
     }
