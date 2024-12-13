@@ -35,7 +35,7 @@ public final class ControlPanel {
     private IconWithPosition _selectedIcon;
 
     private boolean _drawOldControlPanel = false;
-    private boolean _drawOldControlPanelAfter = true;
+    private boolean _drawOldControlPanelAfter = false;
     private boolean _drawNewControlPanel = true;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
