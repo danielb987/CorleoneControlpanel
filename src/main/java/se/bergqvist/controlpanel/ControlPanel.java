@@ -211,6 +211,7 @@ public final class ControlPanel {
                     Point pos = getIconPosition(x, y);
                     if (iconData[x][y].getIcon().isHit(pos.x, pos.y, xc, yc)) {
                         iconData[x][y].getIcon().drawFrame(g, pos.x, pos.y);
+//                        iconData[x][y].setAddress(turnout[0]);
                     }
 //                    iconData[x][y].draw(g, px, py);
                 }
@@ -399,21 +400,8 @@ public final class ControlPanel {
         for (int y=0; y < RASTER_NUM_Y; y++) {
             for (int x=0; x < RASTER_NUM_X; x++) {
                 IconData id = iconData[x][y];
-                Icon i = id.getIcon();
-                if (i.getType() == Icon.Type.Empty) continue;   // Don't store empty icons
-
-                Element icon = new Element("Icon");
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("y", Integer.toString(y));
-                icon.setAttribute("type", i.getType().name());
-                icon.setAttribute("bits", Integer.toString(i.getBits()));
-/*
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-*/
-                icons.addContent(icon);
+                if (id.getIcon().getType() == Icon.Type.Empty) continue;   // Don't store empty icons
+                icons.addContent(id.getXml(x, y));
             }
         }
 
@@ -439,6 +427,7 @@ public final class ControlPanel {
 */
             Icon i = Icon.get(type, bits);
             IconData id = i.createIconData();
+            id.loadXml(iconElement);
             iconData[x][y] = id;
         }
     }

@@ -172,7 +172,7 @@ public class TurnoutIcon extends Icon {
     }
 
 
-    private static class TurnoutIconData implements IconData {
+    private static class TurnoutIconData extends AbstractIconData {
 
         private final TurnoutIcon _icon;
 
