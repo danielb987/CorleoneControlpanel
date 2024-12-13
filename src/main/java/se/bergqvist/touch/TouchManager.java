@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import se.bergqvist.event.EventManager;
 import se.bergqvist.event.EventManager.Event;
-import se.bergqvist.event.EventManager.EventListener;
+import se.bergqvist.event.EventManager.LowLevelEventListener;
 
 /**
  * Touch manager.
@@ -40,21 +40,29 @@ public class TouchManager {
         return false;
     }
 
-    public static void create(Path path, TouchListener touchListener) {
+    public static EventListener create(Path path, TouchListener touchListener) {
         MyListener eventListener = new MyListener(touchListener);
-        TouchManager tm = new TouchManager(path, eventListener);
-        _listeners.add(eventListener);
-    }
-
-    private TouchManager(Path path, EventListener eventListener) {
         EventManager.create(path, eventListener);
+        _listeners.add(eventListener);
+        return eventListener;
+    }
+
+//    private TouchManager(Path path, EventListener eventListener) {
+//        EventManager.create(path, eventListener);
+//    }
+
+
+    public interface EventListener {
+
+        public void setTouchListener(TouchListener touchListener);
+        public TouchListener getTouchListener();
+
     }
 
 
-    private static class MyListener implements EventListener {
+    private static class MyListener implements EventListener, LowLevelEventListener {
 
-        private final TouchListener _touchListener;
-
+        private TouchListener _touchListener;
         private TouchState _touchState = TouchState.None;
         private boolean _isButtonDownEvent;
         private boolean _isButtonUpEvent;
@@ -71,6 +79,22 @@ public class TouchManager {
         }
 
         @Override
+        public void setTouchListener(TouchListener touchListener) {
+            this._touchListener = touchListener;
+        }
+
+        @Override
+        public TouchListener getTouchListener() {
+            return _touchListener;
+        }
+
+        private void dispatchEvent(TouchEvent evt) {
+            java.awt.EventQueue.invokeLater(() -> {
+                _touchListener.event(evt);
+            });
+        }
+
+        @Override
         public synchronized void event(Event event) {
             switch (event.event) {
                 case Separator -> {
@@ -83,19 +107,19 @@ public class TouchManager {
                         _firstEventTime = System.currentTimeMillis();
                         _isButtonDownEvent = false;
                     } else if (_isButtonUpEvent) {
-                        TouchEvent evt = new TouchEvent(_touchState == TouchState.Drag ? TouchEnum.EndDrag : TouchEnum.Click, _x, _y);
-                        _touchListener.event(evt);
+                        TouchEvent evt = new TouchEvent(_touchState == TouchState.Drag ? TouchEnum.EndDrag : TouchEnum.Click, _x, _y, this);
+                        dispatchEvent(evt);
                         _isButtonDown = false;
                         _touchState = TouchState.None;
                         _isButtonUpEvent = false;
                         _touchActive = false;
                     } else if (_touchState == TouchState.Click && DRAG_DELAY <= (_lastEventTime - _firstEventTime)) {
                         _touchState = TouchState.Drag;
-                        TouchEvent evt = new TouchEvent(TouchEnum.StartDrag, _x, _y);
-                        _touchListener.event(evt);
+                        TouchEvent evt = new TouchEvent(TouchEnum.StartDrag, _x, _y, this);
+                        dispatchEvent(evt);
                     } else if (_touchState == TouchState.Drag && _hasMoved) {
-                        TouchEvent evt = new TouchEvent(TouchEnum.Drag, _x, _y);
-                        _touchListener.event(evt);
+                        TouchEvent evt = new TouchEvent(TouchEnum.Drag, _x, _y, this);
+                        dispatchEvent(evt);
                     }
                     _lastEventTime = System.currentTimeMillis();
                     _hasMoved = false;

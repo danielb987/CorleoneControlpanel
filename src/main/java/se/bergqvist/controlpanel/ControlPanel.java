@@ -3,9 +3,10 @@ package se.bergqvist.controlpanel;
 import se.bergqvist.controlpanel.icons.LineIcon;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Stroke;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -21,8 +22,6 @@ import se.bergqvist.log.Logger;
  */
 public final class ControlPanel {
 
-//    private static final ControlPanel INSTANCE = new ControlPanel();
-
     private static final int RASTER_X0 = 20;
     private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
     private static final int RASTER_NUM_X = 41;
@@ -36,6 +35,7 @@ public final class ControlPanel {
     private IconWithPosition _selectedIcon;
 
     private boolean _drawOldControlPanel = false;
+    private boolean _drawOldControlPanelAfter = true;
     private boolean _drawNewControlPanel = true;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
@@ -47,7 +47,7 @@ public final class ControlPanel {
         {112, 0, 3, 188, 339, 169, 339, 175, 352, 0},
         {113, 0, 3, 235, 293, 216, 293, 222, 306, 0},
         {114, 0, 3, 281, 247, 262, 247, 268, 260, 0},
-        {115, 0, 4, 289, 155, 270, 155, 276, 142, 0},
+        {115, 0, 4, 289, 155, 270, 155, 276, 142, 0, 40, 0},
         {121, 0, 2, 40, 201, 59, 201, 53, 188, 0},
         {122, 0, 3, 281, 201, 262, 201, 268, 188, 0},
         {123, 0, 3, 62, 247, 81, 247, 75, 234, 0},
@@ -60,22 +60,22 @@ public final class ControlPanel {
         {212, 0, 2, 40, 247, 59, 247, 53, 260, 0},
         {213, 0, 2, 86, 293, 105, 293, 99, 306, 0},
         {214, 0, 2, 132, 339, 151, 339, 145, 352, 0},
-        {215, 0, 2, 144, 98, 163, 98, 157, 85, 0},
+        {215, 0, 2, 144, 98, 163, 98, 157, 85, 0, 30, -30},
         {411, 0, 1, 280, 201, 261, 201, 267, 188, 0},
         {412, 0, 1, 281, 247, 262, 247, 268, 260, 0},
         {413, 0, 1, 235, 293, 216, 293, 222, 306, 0},
         {414, 0, 1, 189, 339, 170, 339, 176, 352, 0},
-        {415, 0, 1, 206, 127, 225, 127, 219, 140, 0},
-        {421, 0, 1, 177, 98, 158, 98, 164, 85, 0},
+        {415, 0, 1, 206, 127, 225, 127, 219, 140, 0, 0, -20},
+        {421, 0, 1, 177, 98, 158, 98, 164, 85, 0, -10, -40},
         {422, 415, 1, 234, 155, 215, 155, 221, 142, 1},
-        {511, 512, 0, 40, 247, 59, 247, 53, 234, 0},
-        {512, 0, 0, 86, 201, 67, 201, 73, 214, 0},
+        {511, 512, 0, 40, 247, 59, 247, 53, 234, 0, -10, 0},
+        {512, 0, 0, 86, 201, 67, 201, 73, 214, 0, -10, 0},
         {513, 0, 0, 121, 201, 140, 201, 134, 214, 0},
         {514, 513, 0, 167, 247, 148, 247, 154, 234, 0},
-        {711, 712, 0, 235, 314, 235, 333, 248, 327, 0},
-        {712, 0, 0, 281, 360, 281, 341, 268, 347, 0},
-        {713, 0, 0, 281, 395, 281, 414, 268, 408, 0},
-        {714, 713, 0, 235, 441, 235, 422, 248, 428, 1},
+        {711, 712, 0, 235, 314, 235, 333, 248, 327, 0, 10, 25},
+        {712, 0, 0, 281, 360, 281, 341, 268, 347, 0, 10, 25},
+        {713, 0, 0, 281, 395, 281, 414, 268, 408, 0, 10, 40},
+        {714, 713, 0, 235, 441, 235, 422, 248, 428, 1, 10, 40},
     };
 
     // display, x1, y1, x2, y2
@@ -151,6 +151,85 @@ public final class ControlPanel {
         }
     }
 
+    private void drawOldControlpanel(Graphics2D g) {
+        Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+        Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g.setColor(Color.BLACK);
+        g.setStroke(capRoundStroke);
+        if (false)
+        for (int[] line : lines) {
+            int offset = 1500 - line[0] * 330;
+            g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
+        }
+//        for (int display=0; display < 5; display++) {
+//        }
+
+//        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
+
+        // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
+        if (false)
+        for (int[] turnout : turnouts) {
+            boolean thrown = Math.random() < 0.5;
+            int offset = 1500 - turnout[2] * 330;
+            if (thrown) {
+                g.setColor(Color.WHITE);
+                g.setStroke(capButtStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+                g.setColor(Color.BLACK);
+                g.setStroke(capRoundStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+            } else {
+                g.setColor(Color.WHITE);
+                g.setStroke(capButtStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+                g.setColor(Color.BLACK);
+                g.setStroke(capRoundStroke);
+                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+            }
+/*
+            g.setColor(Color.RED);
+            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
+            g.setColor(Color.GREEN);
+            g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
+*/
+        }
+
+        for (int[] turnout : turnouts) {
+            int offset = 1500 - turnout[2] * 330;
+
+            int xc = offset+turnout[3];
+            int yc = turnout[4];
+            int r = 10;
+            if (turnout.length > 10) {
+                xc += turnout[10];
+                yc += turnout[11];
+            }
+            g.fillOval(xc-r, yc-r, r*2, r*2);
+            g.setColor(Color.BLUE);
+            for (int y=0; y < RASTER_NUM_Y; y++) {
+                for (int x=0; x < RASTER_NUM_X; x++) {
+                    Point pos = getIconPosition(x, y);
+                    if (iconData[x][y].getIcon().isHit(pos.x, pos.y, xc, yc)) {
+                        iconData[x][y].getIcon().drawFrame(g, pos.x, pos.y);
+    // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
+//                        iconData[x][y].setAddress(turnout[0]);
+//                        iconData[x][y].setMasterAddress(turnout[1]);
+//                        iconData[x][y].setInverted(turnout[9] == 1);
+                    }
+//                    iconData[x][y].draw(g, px, py);
+                }
+            }
+            g.setColor(Color.BLACK);
+            g.drawString(Integer.toString(turnout[0]), xc-10, yc+30);
+        }
+    }
+
+    private Point getIconPosition(int x, int y) {
+        int px = RASTER_X0 + Icon.RASTER_MARGIN + x * Icon.RASTER_SIZE;
+        int py = RASTER_Y0 + Icon.RASTER_MARGIN + y * Icon.RASTER_SIZE;
+        return new Point(px,py);
+    }
+
     public void draw(Graphics2D g) {
 
         Color oldColor = g.getColor();
@@ -168,45 +247,7 @@ public final class ControlPanel {
         }
 */
         if (_drawOldControlPanel) {
-            Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
-            Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g.setColor(Color.BLACK);
-            g.setStroke(capRoundStroke);
-            for (int[] line : lines) {
-                int offset = 1500 - line[0] * 330;
-                g.drawLine(offset+line[1], line[2], offset+line[3], line[4]);
-            }
-    //        for (int display=0; display < 5; display++) {
-    //        }
-
-    //        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
-
-            // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
-            for (int[] turnout : turnouts) {
-                boolean thrown = Math.random() < 0.5;
-                int offset = 1500 - turnout[2] * 330;
-                if (thrown) {
-                    g.setColor(Color.WHITE);
-                    g.setStroke(capButtStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                    g.setColor(Color.BLACK);
-                    g.setStroke(capRoundStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-                } else {
-                    g.setColor(Color.WHITE);
-                    g.setStroke(capButtStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-                    g.setColor(Color.BLACK);
-                    g.setStroke(capRoundStroke);
-                    g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                }
-    /*
-                g.setColor(Color.RED);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[5], turnout[6]);
-                g.setColor(Color.GREEN);
-                g.drawLine(offset+turnout[3], turnout[4], offset+turnout[7], turnout[8]);
-    */
-            }
+            drawOldControlpanel(g);
         }
 
 /*
@@ -293,6 +334,10 @@ public final class ControlPanel {
 
         drawControlPanel(g);
 
+        if (_drawOldControlPanelAfter) {
+            drawOldControlpanel(g);
+        }
+
         g.setColor(oldColor);
         g.setStroke(oldStroke);
     }
@@ -327,22 +372,16 @@ public final class ControlPanel {
         }
     }
 
-    public void mousePressed(MouseEvent me, JPanel panel) {
-        int x = me.getX();
-        int y = me.getY();
-        event(x, y, panel);
-    }
-
     public void event(int ex, int ey, JPanel panel) {
 
-        System.out.format("xx: %d, yy: %d%n", ex, ey);
-
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
-            int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
-            int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
-            System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
-            iconData[x][y] = _selectedIcon._icon.createIconData();
-            panel.repaint();
+            if (_selectedIcon != null) {
+                int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
+                int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
+                System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
+                iconData[x][y] = _selectedIcon._icon.createIconData();
+                panel.repaint();
+            }
         } else {
             for (IconWithPosition ip : _iconPalette) {
                 if (ip._icon.isHit(ip._x, ip._y, ex, ey)) {
@@ -364,21 +403,8 @@ public final class ControlPanel {
         for (int y=0; y < RASTER_NUM_Y; y++) {
             for (int x=0; x < RASTER_NUM_X; x++) {
                 IconData id = iconData[x][y];
-                Icon i = id.getIcon();
-                if (i.getType() == Icon.Type.Empty) continue;   // Don't store empty icons
-
-                Element icon = new Element("Icon");
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("y", Integer.toString(y));
-                icon.setAttribute("type", i.getType().name());
-                icon.setAttribute("bits", Integer.toString(i.getBits()));
-/*
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-                icon.setAttribute("x", Integer.toString(x));
-*/
-                icons.addContent(icon);
+                if (id.getIcon().getType() == Icon.Type.Empty) continue;   // Don't store empty icons
+                icons.addContent(id.getXml(x, y));
             }
         }
 
@@ -404,6 +430,7 @@ public final class ControlPanel {
 */
             Icon i = Icon.get(type, bits);
             IconData id = i.createIconData();
+            id.loadXml(iconElement);
             iconData[x][y] = id;
         }
     }

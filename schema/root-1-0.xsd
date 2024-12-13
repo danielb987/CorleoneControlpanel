@@ -4,13 +4,13 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 
-    <xs:include schemaLocation="controlpanel.xsd"/>
+    <xs:include schemaLocation="configuration-1-0.xsd"/>
+    <xs:include schemaLocation="controlpanel-1-0.xsd"/>
 
     <xs:element name="Controlpanel" >
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Configuration" minOccurs="1" maxOccurs="1">
-                </xs:element>
+                <xs:element name="Configuration" type="ConfigurationType" minOccurs="1" maxOccurs="1" />
                 <xs:element name="Controlpanel" type="ControlpanelType" minOccurs="1" maxOccurs="1" />
                 <xs:element name="Views" minOccurs="1" maxOccurs="1">
                 </xs:element>

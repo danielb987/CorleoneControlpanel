@@ -170,7 +170,7 @@ public class TurntableIcon extends Icon {
     }
 
 
-    private static class TurntableIconData implements IconData {
+    private static class TurntableIconData extends AbstractIconData {
 
         private final TurntableIcon _icon;
 

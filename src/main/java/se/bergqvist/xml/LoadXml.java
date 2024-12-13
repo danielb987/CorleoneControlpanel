@@ -12,6 +12,7 @@ import org.jdom2.input.sax.XMLReaderJDOMFactory;
 import org.jdom2.input.sax.XMLReaders;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import se.bergqvist.config.Config;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.log.Logger;
 
@@ -37,6 +38,7 @@ public class LoadXml {
         Element root = getRoot(file);
         System.out.format("root: %s: %s%n", root.getName(), root.getClass().getName());
         Element configuration = root.getChild("Configuration");
+        Config.get().loadXml(configuration);
         Element controlpanel = root.getChild("Controlpanel");
         ControlPanel.get().loadXml(controlpanel);
         Element views = root.getChild("Views");

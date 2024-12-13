@@ -174,7 +174,7 @@ public class LineIcon extends Icon {
     }
 
 
-    private static class LineIconData implements IconData {
+    private static class LineIconData extends AbstractIconData {
 
         private final LineIcon _icon;
 

@@ -13,20 +13,20 @@ import se.bergqvist.log.Logger;
  */
 public class EventManager implements Runnable {
 
-    public interface EventListener {
+    public interface LowLevelEventListener {
         void event(Event event);
     }
 
 
     private final Path _path;
-    private final EventListener _listener;
+    private final LowLevelEventListener _listener;
 
-    public static void create(Path path, EventListener listener) {
+    public static void create(Path path, LowLevelEventListener listener) {
         EventManager em = new EventManager(path, listener);
         new Thread(em).start();
     }
 
-    private EventManager(Path path, EventListener listener) {
+    private EventManager(Path path, LowLevelEventListener listener) {
         this._path = path;
         this._listener = listener;
     }
