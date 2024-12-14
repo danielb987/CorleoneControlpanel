@@ -99,7 +99,7 @@ public final class ControlPanel {
                 for (Icon icon : Icon.get(type)) {
                     int x = 100 + count++ * Icon.RASTER_SIZE;
                     icon.drawFrame(g, x, y);
-                    icon.draw(g, x, y, -1);
+                    icon.draw(g, x, y, 0);
                     _iconPalette.add(new IconWithPosition(icon, x, y));
     //                System.out.format("Type: %s, i: %d, class: %s%n", type.name(), i++, icon.getClass());
                 }
@@ -115,29 +115,29 @@ public final class ControlPanel {
 
 
             Icon turntable = Icon.get(Icon.Type.WyeSlip, 0);
-            turntable.draw(g, 1200, 700, -1);
+            turntable.draw(g, 1200, 700, 0);
 
-            Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, -1);
+            Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, 0);
 
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, -1);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE, 0);
 
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, -1);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, 0);
 
-            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, -1);
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE, 0);
 
 
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, -1);
-            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, -1);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, 0);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE, 0);
         }
 
         drawControlPanel(g);
@@ -161,7 +161,11 @@ public final class ControlPanel {
             for (int x=0; x < RASTER_NUM_X; x++) {
                 int px = RASTER_X0 + Icon.RASTER_MARGIN + x * Icon.RASTER_SIZE;
                 int py = RASTER_Y0 + Icon.RASTER_MARGIN + y * Icon.RASTER_SIZE;
-                iconData[x][y].draw(g, px, py);
+                if (this._editControlPanel) {
+                    iconData[x][y].getIcon().draw(g, px, py, 0);
+                } else {
+                    iconData[x][y].draw(g, px, py);
+                }
             }
         }
     }
