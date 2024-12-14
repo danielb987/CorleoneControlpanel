@@ -37,6 +37,7 @@ public final class ControlPanel {
     private boolean _drawOldControlPanel = false;
     private boolean _drawOldControlPanelAfter = false;
     private boolean _drawNewControlPanel = true;
+    private boolean _editControlPanel = false;
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
     int[][] turnouts = {
@@ -279,58 +280,62 @@ public final class ControlPanel {
             }
         }
 */
-        Stroke stroke = new BasicStroke(1.0f);
-        g.setStroke(stroke);
 
-        int y = 500;
-        for (LineIcon.Type type : LineIcon.Type.values()) {
-            count = 0;
-//            y += 50;
-            y += Icon.RASTER_SIZE;
-//            int i = 0;
-            for (Icon icon : Icon.get(type)) {
-                int x = 100 + count++ * Icon.RASTER_SIZE;
-                icon.drawFrame(g, x, y);
-                icon.draw(g, x, y);
-                _iconPalette.add(new IconWithPosition(icon, x, y));
-//                System.out.format("Type: %s, i: %d, class: %s%n", type.name(), i++, icon.getClass());
+
+
+        if (_editControlPanel) {
+            Stroke stroke = new BasicStroke(1.0f);
+            g.setStroke(stroke);
+
+            int y = 500;
+            for (LineIcon.Type type : LineIcon.Type.values()) {
+                count = 0;
+    //            y += 50;
+                y += Icon.RASTER_SIZE;
+    //            int i = 0;
+                for (Icon icon : Icon.get(type)) {
+                    int x = 100 + count++ * Icon.RASTER_SIZE;
+                    icon.drawFrame(g, x, y);
+                    icon.draw(g, x, y);
+                    _iconPalette.add(new IconWithPosition(icon, x, y));
+    //                System.out.format("Type: %s, i: %d, class: %s%n", type.name(), i++, icon.getClass());
+                }
             }
+
+            if (_selectedIcon != null) {
+                g.setColor(Color.RED);
+                Stroke stroke2 = new BasicStroke(3.0f);
+                g.setStroke(stroke2);
+                _selectedIcon._icon.drawFrame(g, _selectedIcon._x, _selectedIcon._y);
+            }
+
+
+
+            Icon turntable = Icon.get(Icon.Type.WyeSlip, 0);
+            turntable.draw(g, 1200, 700);
+
+            Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
+
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
+
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
+
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
+
+
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
+            Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
         }
-
-        if (_selectedIcon != null) {
-            g.setColor(Color.RED);
-            Stroke stroke2 = new BasicStroke(3.0f);
-            g.setStroke(stroke2);
-            _selectedIcon._icon.drawFrame(g, _selectedIcon._x, _selectedIcon._y);
-        }
-
-
-
-        Icon turntable = Icon.get(Icon.Type.WyeSlip, 0);
-        turntable.draw(g, 1200, 700);
-
-        Icon.get(Icon.Type.Line, 0b00010010).draw(g, 1200-Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200-Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
-
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700-1*Icon.RASTER_SIZE);
-
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b00010001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
-
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+0*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+1*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.WyeSlip, 0b00101001).draw(g, 1200+3*Icon.RASTER_SIZE, 700+2*Icon.RASTER_SIZE);
-
-
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+0*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+1*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
-        Icon.get(Icon.Type.Line, 0b01000100).draw(g, 1200+2*Icon.RASTER_SIZE, 700+3*Icon.RASTER_SIZE);
-
 
         drawControlPanel(g);
 
@@ -372,8 +377,7 @@ public final class ControlPanel {
         }
     }
 
-    public void event(int ex, int ey, JPanel panel) {
-
+    public void handleEditControlPanel(int ex, int ey, JPanel panel) {
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
             if (_selectedIcon != null) {
                 int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
@@ -393,6 +397,12 @@ public final class ControlPanel {
             // If here, no hit
            _selectedIcon = null;
             panel.repaint();
+        }
+    }
+
+    public void event(int ex, int ey, JPanel panel) {
+        if (_editControlPanel) {
+            handleEditControlPanel(ex, ey, panel);
         }
     }
 
