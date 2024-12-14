@@ -79,7 +79,6 @@ public abstract class AbstractIconData implements IconData {
         if (invertedElem != null) {
             _inverted = invertedElem.equals("yes");
         }
-        System.out.format("Address: %d%n", _address);
     }
 
 }

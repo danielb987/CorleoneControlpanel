@@ -150,7 +150,7 @@ public class TurntableIcon extends Icon {
     }
 
     @Override
-    public void draw(Graphics2D g, int x, int y) {
+    public void draw(Graphics2D g, int x, int y, int state) {
         g.drawImage(_image, x, y, null);
     }
 
@@ -180,7 +180,7 @@ public class TurntableIcon extends Icon {
 
         @Override
         public void draw(Graphics2D g, int x, int y) {
-            _icon.draw(g, x, y);
+            _icon.draw(g, x, y, -1);
         }
 
         @Override

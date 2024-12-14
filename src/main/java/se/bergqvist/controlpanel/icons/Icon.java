@@ -73,7 +73,14 @@ public abstract class Icon {
 
     public abstract int getBits();
 
-    public abstract void draw(Graphics2D g, int x, int y);
+    /**
+     * Draw the icon.
+     * @param g
+     * @param x
+     * @param y
+     * @param state -1 is construction, otherwise the state
+     */
+    public abstract void draw(Graphics2D g, int x, int y, int state);
 
     public abstract void drawFrame(Graphics2D g, int x, int y);
 
