@@ -184,6 +184,11 @@ public class TurntableIcon extends Icon {
         }
 
         @Override
+        public int getState() {
+            return 0;
+        }
+
+        @Override
         public void nextState() {
             throw new UnsupportedOperationException("Not supported yet.");
         }

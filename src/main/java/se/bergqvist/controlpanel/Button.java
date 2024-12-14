@@ -28,9 +28,11 @@ public class Button {
     private final int _cy;
 
     public Button(Graphics g, String caption, int x, int y, int w, int h) {
+        Font oldFont = g.getFont();
         g.setFont(FONT);
         FontMetrics fm = g.getFontMetrics();
         int fontHeight = fm.getAscent() + fm.getDescent();
+        g.setFont(oldFont);
 
         this._caption = caption;
         this._x = x;
@@ -43,12 +45,14 @@ public class Button {
 
     public void draw(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        Font oldFont = g.getFont();
         g.setFont(FONT);
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(_x, _y, _w, _h);
         g.setColor(Color.BLACK);
         g.drawRect(_x, _y, _w, _h);
         g.drawString(_caption, _cx, _cy);
+        g.setFont(oldFont);
     }
 
     public boolean isHit(int x, int y) {

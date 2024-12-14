@@ -8,7 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JPanel;
 import org.jdom2.Element;
 import se.bergqvist.controlpanel.icons.Icon;
@@ -23,7 +25,8 @@ import se.bergqvist.log.Logger;
 public final class ControlPanel {
 
     private static final int RASTER_X0 = 20;
-    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
+//    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
+    private static final int RASTER_Y0 = 500;
     private static final int RASTER_NUM_X = 41;
     private static final int RASTER_NUM_Y = 11;
     private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
@@ -38,6 +41,8 @@ public final class ControlPanel {
     private boolean _drawOldControlPanelAfter = false;
     private boolean _drawNewControlPanel = true;
     private boolean _editControlPanel = false;
+
+    private Map<Integer, Boolean> _oldTurnoutStates = new HashMap<>();
 
     // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
     int[][] turnouts = {
@@ -170,7 +175,8 @@ public final class ControlPanel {
         // address, masterAddr, display, x1, y1, x2, y2, x3, y3, inverted
         if (false)
         for (int[] turnout : turnouts) {
-            boolean thrown = Math.random() < 0.5;
+//            boolean thrown = Math.random() < 0.5;
+            boolean thrown = _oldTurnoutStates.computeIfAbsent(turnout[0], (v) -> {return false;});
             int offset = 1500 - turnout[2] * 330;
             if (thrown) {
                 g.setColor(Color.WHITE);
@@ -406,6 +412,7 @@ public final class ControlPanel {
             int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
             System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
             iconData[x][y].nextState();
+            _oldTurnoutStates.put(iconData[x][y].getAddress(), (iconData[x][y].getState() != 0) ^ iconData[x][y].isInverted());
             panel.repaint();
         }
     }

@@ -197,6 +197,11 @@ public class TurnoutIcon extends Icon {
         }
 
         @Override
+        public int getState() {
+            return _state;
+        }
+
+        @Override
         public void nextState() {
             _state++;
             if (_state >= _icon._numStates) {
