@@ -30,8 +30,9 @@ public class TurnoutIcon extends Icon {
     private final int _bitThrown;
     private final int _bitClosed2;
     private final int _bitThrown2;
-    private final Graphics2D _graphics;
-    private final Image _image;
+    private final int _numStates;
+//    private final Graphics2D _graphics;
+    private final List<Image> _images = new ArrayList<>();
 
     public static void initialize(Component c) {
 
@@ -65,10 +66,10 @@ public class TurnoutIcon extends Icon {
         addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0b10000000, 0b00000100, 0b00010000));
 
         // Slip
-        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b00010000, 0b00100000, 0b00000001, 0b00000010));
-        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b00100000, 0b01000000, 0b00000010, 0b00000100));
-        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b01000000, 0b10000000, 0b00000100, 0b00001000));
-        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b10000000, 0b00000001, 0b00001000, 0b00010000));
+        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b00010000, 0b00100000, 0b00000001, 0b00000010, 4));
+        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b00100000, 0b01000000, 0b00000010, 0b00000100, 4));
+        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b01000000, 0b10000000, 0b00000100, 0b00001000, 4));
+        addIcon(mapList, new TurnoutIcon(c, Type.WyeSlip, 0, 0b10000000, 0b00000001, 0b00001000, 0b00010000, 4));
     }
 
     private static void addIcon(Map<Type, List<Icon>> map, TurnoutIcon icon) {
@@ -79,10 +80,10 @@ public class TurnoutIcon extends Icon {
     }
 
     private TurnoutIcon(Component component, Type type, int bits, int bitClosed, int bitThrown) {
-        this(component, type, bits, bitClosed, bitThrown, 0, 0);
+        this(component, type, bits, bitClosed, bitThrown, 0, 0, 2);
     }
 
-    private TurnoutIcon(Component component, Type type, int bits, int bitClosed, int bitThrown, int bitClosed2, int bitThrown2) {
+    private TurnoutIcon(Component component, Type type, int bits, int bitClosed, int bitThrown, int bitClosed2, int bitThrown2, int numStates) {
         this._type = type;
         this._width = 1;
         this._height = 1;
@@ -91,34 +92,38 @@ public class TurnoutIcon extends Icon {
         this._bitThrown = bitThrown;
         this._bitClosed2 = bitClosed2;
         this._bitThrown2 = bitThrown2;
-        _image = component.createImage(_width * SIZE, _height * SIZE);
-        _graphics = (Graphics2D) _image.getGraphics();
-//        _graphics.setColor(Color.GREEN);
-        _graphics.setColor(Color.WHITE);
-        _graphics.fillRect(0, 0, SIZE, SIZE);
-        _graphics.setColor(Color.BLACK);
-        _graphics.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        drawSections(bits);
+        this._numStates = numStates;
+        for (int state=-1; state < _numStates; state++) {
+            Image image = component.createImage(_width * SIZE, _height * SIZE);
+            _images.add(image);
+            Graphics2D graphics = (Graphics2D) image.getGraphics();
+    //        _graphics.setColor(Color.GREEN);
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, SIZE, SIZE);
+            graphics.setColor(Color.BLACK);
+            graphics.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            drawSections(graphics, bits, true);
 
-        _graphics.setColor(Color.GREEN);
-        drawSections(bitClosed);
-        _graphics.setColor(Color.RED);
-        drawSections(bitThrown);
+            if (state == -1) graphics.setColor(Color.GREEN);
+            drawSections(graphics, bitClosed, state == -1 || state == 0);
+            if (state == -1) graphics.setColor(Color.RED);
+            drawSections(graphics, bitThrown, state == -1 || state == 1);
 
-        _graphics.setColor(Color.YELLOW);
-        drawSections(bitClosed2);
-        _graphics.setColor(Color.BLUE);
-        drawSections(bitThrown2);
+            if (state == -1) graphics.setColor(Color.YELLOW);
+            drawSections(graphics, bitClosed2, true);
+            if (state == -1) graphics.setColor(Color.BLUE);
+            drawSections(graphics, bitThrown2, true);
+        }
     }
 
-    private void drawSections(int bits) {
+    private void drawSections(Graphics2D graphics, int bits, boolean full) {
         for (int i=0; i < 8; i++) {
-            if ((bits & 0x01) == 1) drawSection(i);
+            if ((bits & 0x01) == 1) drawSection(graphics, i, full);
             bits >>= 1;
         }
     }
 
-    private void drawSection(int bit) {
+    private void drawSection(Graphics2D graphics, int bit, boolean full) {
         int x0 = SIZE / 2 + 1;
         int y0 = SIZE / 2 + 1;
         int x;
@@ -134,7 +139,11 @@ public class TurnoutIcon extends Icon {
             case 7 -> { x = x0 + SIZE; y = y0 - SIZE; }
             default -> throw new IllegalArgumentException("Invalid bit: "+Integer.toString(bit));
         }
-        _graphics.drawLine(x0, y0, x, y);
+        if (!full) {
+            x0 = (int) Math.round((x+x0*2.0) / 3);
+            y0 = (int) Math.round((y+y0*2.0) / 3);
+        }
+        graphics.drawLine(x0, y0, x, y);
     }
 
     private void drawEndBumper() {
@@ -152,8 +161,8 @@ public class TurnoutIcon extends Icon {
     }
 
     @Override
-    public void draw(Graphics2D g, int x, int y) {
-        g.drawImage(_image, x, y, null);
+    public void draw(Graphics2D g, int x, int y, int state) {
+        g.drawImage(_images.get(state), x, y, null);
     }
 
     @Override
@@ -176,18 +185,28 @@ public class TurnoutIcon extends Icon {
 
         private final TurnoutIcon _icon;
 
+        private int _state;
+
         private TurnoutIconData(TurnoutIcon icon) {
             this._icon = icon;
         }
 
         @Override
         public void draw(Graphics2D g, int x, int y) {
-            _icon.draw(g, x, y);
+            _icon.draw(g, x, y, _state+1);
+        }
+
+        @Override
+        public int getState() {
+            return _state;
         }
 
         @Override
         public void nextState() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            _state++;
+            if (_state >= _icon._numStates) {
+                _state = 0;
+            }
         }
 
         @Override

@@ -152,7 +152,7 @@ public class LineIcon extends Icon {
     }
 
     @Override
-    public void draw(Graphics2D g, int x, int y) {
+    public void draw(Graphics2D g, int x, int y, int state) {
         if (_type != Type.Empty) {
             g.drawImage(_image, x, y, null);
         }
@@ -184,12 +184,17 @@ public class LineIcon extends Icon {
 
         @Override
         public void draw(Graphics2D g, int x, int y) {
-            _icon.draw(g, x, y);
+            _icon.draw(g, x, y, 0);     // State is always 0 since a line doesn't have a state
+        }
+
+        @Override
+        public int getState() {
+            return 0;
         }
 
         @Override
         public void nextState() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            // Do nothing. Lines don't have a state.
         }
 
         @Override
