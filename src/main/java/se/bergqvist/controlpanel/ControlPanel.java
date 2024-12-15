@@ -153,9 +153,10 @@ public final class ControlPanel {
     private void drawControlPanel(Graphics2D g) {
         Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
         Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-        g.setColor(Color.BLACK);
+//        g.setColor(Color.BLACK);
         g.setStroke(capRoundStroke);
         drawRaster(g);
+        g.setColor(Color.BLACK);
 
         for (int y=0; y < RASTER_NUM_Y; y++) {
             for (int x=0; x < RASTER_NUM_X; x++) {
@@ -165,6 +166,9 @@ public final class ControlPanel {
                     iconData[x][y].getIcon().draw(g, px, py, 0);
                 } else {
                     iconData[x][y].draw(g, px, py);
+                }
+                if (iconData[x][y].getAddress() != 0) {
+                    g.drawString(Integer.toString(iconData[x][y].getAddress()), px, py);
                 }
             }
         }
