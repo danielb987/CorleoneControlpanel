@@ -39,15 +39,16 @@ public class MainJPanel extends JPanel implements MouseListener {
     private Image offscreenImage;
     private Rectangle bounds;
     private boolean _showSelectScreen;
-
+    private boolean _onlyOneTouchscreen = false;
 
     public MainJPanel(MainJFrame frame) {
         this._frame = frame;
         this.addMouseListener(this);
     }
 
-    public void setShowSelectScreen(boolean show) {
+    public void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
         _showSelectScreen = show;
+        _onlyOneTouchscreen = onlyOneTouchscreen;
         repaint();
     }
 
@@ -71,22 +72,22 @@ public class MainJPanel extends JPanel implements MouseListener {
         System.out.flush();
 
         if (_showSelectScreen) {
-            CorleoneControlpanel.switchTouchscreen();
-            CorleoneControlpanel.setShowSelectScreen(false);
+            CorleoneControlpanel.setShowSelectScreen(false, false);
             return;
         }
 
 //        if (event.getType() == TouchEnum.StartDrag
 //                || event.getType() == TouchEnum.Drag
 //                || event.getType() == TouchEnum.EndDrag) {
-
-            if (_touchPanelButton.isHit(x, y)) {
-                System.out.println("HIT!!!");
-                CorleoneControlpanel.setShowSelectScreen(true);
-            } else {
-                ControlPanel.get().event(x,y, this);
-            }
 //        }
+
+        if (_touchPanelButton.isHit(x, y)) {
+            System.out.println("HIT!!!");
+            boolean onlyOneTouchscreen = CorleoneControlpanel.switchTouchscreen();
+            CorleoneControlpanel.setShowSelectScreen(true, onlyOneTouchscreen);
+        } else {
+            ControlPanel.get().event(x,y, this);
+        }
     }
 
     @Override
@@ -118,7 +119,11 @@ public class MainJPanel extends JPanel implements MouseListener {
         if (_showSelectScreen) {
             Font oldFont = bufferGraphics.getFont();
             bufferGraphics.setFont(new Font("Verdana", Font.PLAIN, 60));
-            bufferGraphics.drawString("Touchscreens have been switched", 500, 500);
+            if (_onlyOneTouchscreen) {
+                bufferGraphics.drawString("Only one touchscreen. Cannot switch", 500, 500);
+            } else {
+                bufferGraphics.drawString("Touchscreens have been switched", 500, 500);
+            }
             bufferGraphics.setFont(oldFont);
         } else {
             ControlPanel.get().draw(bufferGraphics);

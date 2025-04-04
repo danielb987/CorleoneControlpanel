@@ -70,16 +70,21 @@ public class Config {
         }
     }
 
-    public void switchTouchscreen() {
+    public boolean switchTouchscreen() {
         Map<Integer, Map.Entry<Integer, TouchListener>> listeners = new HashMap<>();
         int count = 0;
         for (TouchscreenConfig tc : _touchscreenConfigs) {
             listeners.put(count++, new HashMap.SimpleEntry<>(tc._position, tc._listener.getTouchListener()));
         }
-        _touchscreenConfigs.get(0)._position = listeners.get(1).getKey();
-        _touchscreenConfigs.get(0)._listener.setTouchListener(listeners.get(1).getValue());
-        _touchscreenConfigs.get(1)._position = listeners.get(0).getKey();
-        _touchscreenConfigs.get(1)._listener.setTouchListener(listeners.get(0).getValue());
+        if (_touchscreenConfigs.size() > 1) {
+            _touchscreenConfigs.get(0)._position = listeners.get(1).getKey();
+            _touchscreenConfigs.get(0)._listener.setTouchListener(listeners.get(1).getValue());
+            _touchscreenConfigs.get(1)._position = listeners.get(0).getKey();
+            _touchscreenConfigs.get(1)._listener.setTouchListener(listeners.get(0).getValue());
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void setTouchscreen(EventListener listener, int x) {
