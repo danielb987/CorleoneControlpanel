@@ -1,13 +1,16 @@
 package se.bergqvist.corleonecontrolpanel;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import se.bergqvist.controlpanel.Button;
 import se.bergqvist.controlpanel.ControlPanel;
@@ -44,6 +47,12 @@ public class MainJPanel extends JPanel implements MouseListener {
     public MainJPanel(MainJFrame frame) {
         this._frame = frame;
         this.addMouseListener(this);
+
+        // Hide the mouse cursor when it's on the panel
+        this.setCursor(this.getToolkit().createCustomCursor(
+                new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB),
+                new Point(),
+                null));
     }
 
     public void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
