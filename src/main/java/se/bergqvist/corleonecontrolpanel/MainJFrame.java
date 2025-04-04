@@ -44,8 +44,8 @@ public class MainJFrame extends javax.swing.JFrame {
 //        t.start();
     }
 
-    public void setShowSelectScreen(boolean show) {
-        ((MainJPanel)mainJPanel).setShowSelectScreen(show);
+    public void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
+        ((MainJPanel)mainJPanel).setShowSelectScreen(show, onlyOneTouchscreen);
     }
 
     public TouchManager.TouchListener getTouchListener() {
