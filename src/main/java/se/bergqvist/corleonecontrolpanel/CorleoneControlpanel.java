@@ -112,8 +112,10 @@ public class CorleoneControlpanel {
             for (ScreenConfig sc : Config.get().getScreenConfigs())  {
                 Path path = Config.get().getPathForTouchscreen(sc.getPosition());
                 System.out.format("Path: %s%n", path);
-                EventListener listener = TouchManager.create(path, sc.getTouchListener());
-                Config.get().setListenerForTouchscreen(path, listener);
+                if (path != null) {
+                    EventListener listener = TouchManager.create(path, sc.getTouchListener());
+                    Config.get().setListenerForTouchscreen(path, listener);
+                }
                 sc.getFrame().setVisible(true);
             }
 

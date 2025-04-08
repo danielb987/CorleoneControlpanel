@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jdom2.Element;
-import se.bergqvist.controlpanel.icons.Icon;
-import se.bergqvist.controlpanel.icons.IconData;
 import se.bergqvist.corleonecontrolpanel.MainJFrame;
 import se.bergqvist.input.InputDevices;
 import se.bergqvist.touch.TouchManager.EventListener;
@@ -59,7 +57,7 @@ public class Config {
                 return tc._path;
             }
         }
-        throw new RuntimeException("Couldn't find path for touchscreen");
+        return null;    // Couldn't find path for touchscreen
     }
 
     public void setPathForTouchScreen(Path path, int pos) {
