@@ -11,16 +11,14 @@ import java.io.OutputStream;
  */
 public class SerialPort {
 
-    private final String PORTNAME = "/dev/usb1";
-
     private final com.fazecast.jSerialComm.SerialPort _serialPort;
 
-    public SerialPort() {
+    public SerialPort(String portname) {
         com.fazecast.jSerialComm.SerialPort serialPort;
         try {
-            serialPort = com.fazecast.jSerialComm.SerialPort.getCommPort(PORTNAME);
+            serialPort = com.fazecast.jSerialComm.SerialPort.getCommPort(portname);
             serialPort.openPort();
-            serialPort.setComPortTimeouts(com.fazecast.jSerialComm.SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
+//            serialPort.setComPortTimeouts(com.fazecast.jSerialComm.SerialPort.TIMEOUT_READ_BLOCKING, 0, 0);
             serialPort.setNumDataBits(8);
             serialPort.setNumStopBits(1);
             serialPort.setParity(com.fazecast.jSerialComm.SerialPort.NO_PARITY);

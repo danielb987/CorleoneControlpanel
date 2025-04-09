@@ -15,6 +15,7 @@ import se.bergqvist.controlpanel.icons.TurnoutIcon;
 import se.bergqvist.controlpanel.icons.TurntableIcon;
 import se.bergqvist.touch.TouchManager;
 import se.bergqvist.touch.TouchManager.EventListener;
+import se.bergqvist.turntable.Turntable;
 import se.bergqvist.xml.LoadXml;
 
 /**
@@ -61,6 +62,8 @@ public class CorleoneControlpanel {
             java.util.logging.Logger.getLogger(MainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+
+        Turntable.get();
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {

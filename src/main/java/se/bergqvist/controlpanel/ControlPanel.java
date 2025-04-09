@@ -13,6 +13,7 @@ import org.jdom2.Element;
 import se.bergqvist.controlpanel.icons.Icon;
 import se.bergqvist.controlpanel.icons.IconData;
 import se.bergqvist.log.Logger;
+import se.bergqvist.loconet.LocoNetTcpClient;
 
 /**
  * Control panel.
@@ -49,6 +50,7 @@ public final class ControlPanel {
                 iconData[x][y] = Icon.get(Icon.Type.Empty).get(0).createIconData();
             }
         }
+        LocoNetTcpClient.get();
     }
 
     private void drawOldControlpanel(Graphics2D g) {
