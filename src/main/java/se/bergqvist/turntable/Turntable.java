@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import se.bergqvist.serial.SerialPort;
 
 /**
@@ -17,8 +20,19 @@ import se.bergqvist.serial.SerialPort;
  */
 public class Turntable implements Runnable {
 
-    private final String PORTNAME = "/dev/ttyUSB0";
 
+    public interface TurntableListener {
+
+        void info(int speed, boolean direction, int pos, int track, boolean head);
+
+    }
+
+
+
+    private final String PORTNAME = "/dev/ttyTurntable";
+//    private final String PORTNAME = "/dev/ttyUSB0";
+
+    private final List<TurntableListener> _listeners = new ArrayList<>();
     private final SerialPort _serialPort;
 //    private Reader _reader;
     private BufferedReader _reader;
@@ -30,6 +44,13 @@ public class Turntable implements Runnable {
 
     public Turntable() {
         _serialPort = new SerialPort(PORTNAME);
+
+        int MAX = 48000;
+        double diameter = 130 * 12 * 25.4 / 160;
+        double omkrets = diameter * Math.PI;
+
+        System.out.format("Diameter: %1.2f mm, Omkrets: %1.2f mm, Steg/mm: %1.0f%n", diameter, omkrets, MAX / omkrets);
+//        System.exit(0);
     }
 
     public Turntable init() {
@@ -38,6 +59,20 @@ public class Turntable implements Runnable {
         _writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_serialPort.getOutputStream())));
         new Thread(this).start();
 //        _writer.print("Hello\r");
+        _writer.print("!LOCALTION MAX\r");
+        _writer.flush();
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        _writer.print("!AUTO\r");
+        _writer.flush();
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        _writer.print("!AUTO 10\r");
+        _writer.flush();
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+//        _writer.print("!AUTO 100\r");
+//        _writer.print("!AUTO 200\r");
+//        _writer.print("!AUTO 001\r");
+        _writer.flush();
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
 //        _writer.print("Hello\r");
 //        _writer.print("Hello\r");
         System.out.println("Testar att vändskivan är igång");
@@ -55,7 +90,9 @@ public class Turntable implements Runnable {
                 if (ch == 10) {
                     String line = sb.toString();
                     sb.setLength(0);
-                    return line;
+                    if (! line.isBlank()) {
+                        return line;
+                    }
                 } else if (ch != 10) {
                     sb.append((char)ch);
                 }
@@ -76,12 +113,53 @@ public class Turntable implements Runnable {
             try {
                 String line = readLine();
                 System.out.println(line);
+
+                if (line.startsWith("#INFO: ")) {
+//                    Pattern pattern = Pattern.compile("^\\#INFO\\: (\\d+) (\\w\\w) (\\d+) (\\w+) (\\w|\\s)");
+                    Pattern pattern = Pattern.compile("^\\#INFO\\: (\\d+) (\\w\\w) (\\d+) (\\w+|--) (\\w|\\s)");
+                    Matcher matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+//                        for (int i=0; i <= matcher.groupCount(); i++) {
+//                            System.out.format("Group %d: %s%n", i, matcher.group(i));
+//                        }
+                        int speed = Integer.parseInt(matcher.group(1));
+                        boolean direction = "CW".equals(matcher.group(2));
+                        int pos = Integer.parseInt(matcher.group(3));
+                        int track = -1;
+                        if (! "--".equals(matcher.group(4))) {
+                            track = Integer.parseInt(matcher.group(4));
+                        }
+                        boolean head = "H".equals(matcher.group(5));
+                        int tempTrack = track;
+                        java.awt.EventQueue.invokeLater(() -> {
+                            for (var l : _listeners) {
+                                l.info(speed, direction, pos, tempTrack, head);
+                            }
+                        });
+                    }
+                }
             } catch (IOException  e) {
                 e.printStackTrace();
                 _serialPort.closePort();
                 return;
             }
         }
+    }
+
+    public void gotoTrack(int track, boolean head) {
+        _writer.format("!TRACK %02d %s\r", track, head ? "HEAD" : "TAIL");
+        _writer.flush();
+    }
+
+
+    public void gotoPosition(int pos) {
+        _writer.format("!RUN %05d\r", pos);
+        _writer.flush();
+    }
+
+
+    public void addListener(TurntableListener l) {
+        _listeners.add(l);
     }
 
 
