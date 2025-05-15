@@ -14,7 +14,17 @@ public interface IconData {
 
     void draw(Graphics2D g, int x, int y);
 
+    /**
+     * The user has clicked on this icon.
+     * @return true if a second click is required, false otherwise
+     */
+    default boolean click() {
+        return false;
+    }
+
     int getState();
+
+    default void setState(int state) {}
 
     void nextState();
 

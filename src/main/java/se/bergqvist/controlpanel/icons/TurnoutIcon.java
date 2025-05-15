@@ -5,15 +5,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Stroke;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.swing.JPanel;
+import se.bergqvist.layout.Layout;
 
 /**
  * Icon on control panel.
@@ -196,9 +192,38 @@ public class TurnoutIcon extends Icon {
             _icon.draw(g, x, y, _state+1);
         }
 
+        /**
+         * The user has clicked on this icon.
+         * @return true if a second click is required, false otherwise
+         */
+        @Override
+        public boolean click() {
+            int nextState = getNextState();
+            int address = getAddress();
+            if (getMasterAddress() != 0) {
+                address = getMasterAddress();
+            }
+            boolean thrown = (nextState != 0) ^ isInverted();
+            Layout.get().setTurnout(address, thrown);
+            return false;
+        }
+
         @Override
         public int getState() {
             return _state;
+        }
+
+        @Override
+        public void setState(int state) {
+            _state = state;
+        }
+
+        public int getNextState() {
+            int newState = _state + 1;
+            if (newState >= _icon._numStates) {
+                newState = 0;
+            }
+            return newState;
         }
 
         @Override

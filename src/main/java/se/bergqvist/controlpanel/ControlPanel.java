@@ -10,17 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import org.jdom2.Element;
+import se.bergqvist.config.Config;
+import se.bergqvist.config.Config.ScreenConfig;
 import se.bergqvist.controlpanel.icons.Icon;
 import se.bergqvist.controlpanel.icons.IconData;
+import se.bergqvist.layout.Layout;
+import se.bergqvist.layout.Layout.TurnoutListener;
 import se.bergqvist.log.Logger;
-import se.bergqvist.loconet.LocoNetTcpClient;
+// import se.bergqvist.loconet.LocoNetTcpClient;
 
 /**
  * Control panel.
  *
  * @author Daniel Bergqvist
  */
-public final class ControlPanel {
+public final class ControlPanel implements TurnoutListener {
 
     private static final int RASTER_X0 = 20;
 //    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
@@ -50,7 +54,11 @@ public final class ControlPanel {
                 iconData[x][y] = Icon.get(Icon.Type.Empty).get(0).createIconData();
             }
         }
-        LocoNetTcpClient.get();
+    }
+
+    private ControlPanel init() {
+        Layout.get().addListener(this);
+        return this;
     }
 
     private void drawOldControlpanel(Graphics2D g) {
@@ -218,8 +226,17 @@ public final class ControlPanel {
             int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
             int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
             System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
+            boolean requireSecondClick = iconData[x][y].click();
+/*
             iconData[x][y].nextState();
             panel.repaint();
+            int address = iconData[x][y].getAddress();
+            if (iconData[x][y].getMasterAddress() != 0) {
+                address = iconData[x][y].getMasterAddress();
+            }
+            boolean thrown = (iconData[x][y].getState() != 0) ^ iconData[x][y].isInverted();
+            Layout.get().setTurnout(address, thrown);
+*/
         }
     }
 
@@ -270,10 +287,32 @@ public final class ControlPanel {
         }
     }
 
+    @Override
+    public void state(int turnout, boolean value) {
+        boolean hasChanged = false;
+
+        for (int y=0; y < RASTER_NUM_Y; y++) {
+            for (int x=0; x < RASTER_NUM_X; x++) {
+                if (!this._editControlPanel) {
+                    if (iconData[x][y].getAddress() == turnout) {
+                        iconData[x][y].setState(value ? 1 : 0);
+                        hasChanged = true;
+                    }
+                }
+            }
+        }
+
+        if (hasChanged) {
+            for (ScreenConfig sc : Config.get().getScreenConfigs())  {
+                sc.getFrame().repaint();
+            }
+        }
+    }
+
 
     private static class GET_INSTANCE {
 
-        private static ControlPanel INSTANCE = new ControlPanel();
+        private static ControlPanel INSTANCE = new ControlPanel().init();
 
     }
 
