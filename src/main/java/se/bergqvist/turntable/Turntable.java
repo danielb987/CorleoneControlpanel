@@ -146,6 +146,11 @@ public class Turntable implements Runnable {
         }
     }
 
+    public void runHome() {
+        _writer.format("!RUN HOME\r");
+        _writer.flush();
+    }
+
     public void gotoTrack(int track, boolean head) {
         _writer.format("!TRACK %02d %s\r", track, head ? "HEAD" : "TAIL");
         _writer.flush();
@@ -154,6 +159,11 @@ public class Turntable implements Runnable {
 
     public void gotoPosition(int pos) {
         _writer.format("!RUN %05d\r", pos);
+        _writer.flush();
+    }
+
+    public void program(int track) {
+        _writer.format("!PROGRAM %02d\r", track);
         _writer.flush();
     }
 

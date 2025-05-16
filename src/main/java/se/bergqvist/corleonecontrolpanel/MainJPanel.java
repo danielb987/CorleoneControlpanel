@@ -1,7 +1,6 @@
 package se.bergqvist.corleonecontrolpanel;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,6 +18,7 @@ import se.bergqvist.touch.TouchEvent;
 import se.bergqvist.touch.TouchManager;
 import se.bergqvist.touch.TouchManager.EventListener;
 import se.bergqvist.touch.TouchManager.TouchListener;
+import se.bergqvist.turntable.Turntable;
 
 /**
  * Main panel
@@ -31,6 +31,7 @@ public class MainJPanel extends JPanel implements MouseListener {
     private static final int TOUCH_HEIGHT = 9600;
 
     private Button _touchPanelButton;
+    private Button _turnoutHomeButton;
 
     private final MainJFrame _frame;
 
@@ -94,6 +95,9 @@ public class MainJPanel extends JPanel implements MouseListener {
             System.out.println("HIT!!!");
             boolean onlyOneTouchscreen = CorleoneControlpanel.switchTouchscreen();
             CorleoneControlpanel.setShowSelectScreen(true, onlyOneTouchscreen);
+        } else if (_turnoutHomeButton.isHit(x, y)) {
+            System.out.println("HIT!!!");
+            Turntable.get().runHome();
         } else {
             ControlPanel.get().event(x,y, this);
         }
@@ -141,6 +145,13 @@ public class MainJPanel extends JPanel implements MouseListener {
                 _touchPanelButton = new Button(g, "Touch", 0, 0, 120, 50);
             }
             _touchPanelButton.draw(bufferGraphics);
+
+            if (_turnoutHomeButton == null) {
+                int width = 280;
+                int x = this.getWidth() - width;
+                _turnoutHomeButton = new Button(g, "Turntable Home", x, 0, width, 50);
+            }
+            _turnoutHomeButton.draw(bufferGraphics);
         }
 
         g.drawImage(offscreenImage, 0, 0, this);

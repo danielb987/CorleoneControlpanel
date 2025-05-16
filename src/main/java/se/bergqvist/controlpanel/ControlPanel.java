@@ -6,8 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.swing.JPanel;
 import org.jdom2.Element;
 import se.bergqvist.config.Config;
@@ -35,6 +34,8 @@ public final class ControlPanel implements TurnoutListener {
     private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
 
     private final IconData[][] iconData = new IconData[RASTER_NUM_X][RASTER_NUM_Y];
+    private final Map<IconData, Position> iconDataMap = new HashMap<>();
+    private final Map<JPanel, ClickStatus> _clickStatusMap = new HashMap<>();
 
     private final List<IconWithPosition> _iconPalette = new ArrayList<>();
     private IconWithPosition _selectedIcon;
@@ -221,12 +222,24 @@ public final class ControlPanel implements TurnoutListener {
         }
     }
 
+
     public void handleControls(int ex, int ey, JPanel panel) {
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
             int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
             int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
             System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
-            boolean requireSecondClick = iconData[x][y].click();
+
+            ClickStatus clickStatus = _clickStatusMap.computeIfAbsent(panel, k -> new ClickStatus());
+            if (clickStatus._waitForSecondClick) {
+//                clickStatus._firstIconData.secondClick(iconData[x][y]);
+                clickStatus._waitForSecondClick = false;
+            } else {
+                clickStatus._waitForSecondClick = iconData[x][y].click();
+                if (clickStatus._waitForSecondClick) {
+                    clickStatus._firstIconData = iconData[x][y];
+                }
+            }
+//            boolean requireSecondClick = iconData[x][y].click();
 /*
             iconData[x][y].nextState();
             panel.repaint();
@@ -310,6 +323,26 @@ public final class ControlPanel implements TurnoutListener {
     }
 
 
+    public class Position {
+
+        int _x;
+        int _y;
+
+        public Position(int x, int y) {
+            this._x = x;
+            this._y = y;
+        }
+
+        public int getX() {
+            return _x;
+        }
+
+        public int getY() {
+            return _y;
+        }
+    }
+
+
     private static class GET_INSTANCE {
 
         private static ControlPanel INSTANCE = new ControlPanel().init();
@@ -328,6 +361,11 @@ public final class ControlPanel implements TurnoutListener {
             this._x = x;
             this._y = y;
         }
+    }
+
+    private class ClickStatus {
+        boolean _waitForSecondClick;
+        IconData _firstIconData;
     }
 
     private static final Logger LOG = new Logger(ControlPanel.class);
