@@ -5,15 +5,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Stroke;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.swing.JPanel;
 
 /**
  * Icon on control panel.
@@ -36,30 +30,10 @@ public class TurntableIcon extends Icon {
     // 360 degrees
     // 360/24 = 15
     private static final int[] POSITIONS = new int[]{
-        0,
-        20,
-        35,
-        45,
-        55,
-        70,
-        90,
-        110,
-        124,
-        135,
-        146,
-        160,
-        180,
-        200,
-        214,
-        225,
-        236,
-        250,
-        270,
-        290,
-        305,
-        315,
-        326,
-        340,
+          0,  20,  35,  45,  55,  70,
+         90, 110, 124, 135, 146, 160,
+        180, 200, 214, 225, 236, 250,
+        270, 290, 305, 315, 326, 340,
     };
 
     private static final int NUM = 3;
