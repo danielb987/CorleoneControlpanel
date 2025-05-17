@@ -162,6 +162,7 @@ public class TurntableIcon extends Icon {
         private final Map<Integer, Integer> _tailTrackNoMap = new HashMap<>();
         private Status _status = Status.NoTrack;
         private int _currentTrack;
+        private boolean _headOrTail = true;
 
 
         private TurntableIconData(TurntableIcon icon) {
@@ -214,11 +215,17 @@ public class TurntableIcon extends Icon {
                         int y1 = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[head]))*(h2-SUB));
                         int xx = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[tail]))*(w2-SUB));
                         int yy = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[tail]))*(h2-SUB));
-                        g.setColor(Color.red);
                         g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                         // Draw a beziercurve
                         Shape s = new QuadCurve2D.Double(x1, y1, x+w2, y+h2, xx, yy);
                         g.draw(s);
+                        int r = 20;
+                        g.setColor(Color.red);
+                        if (_headOrTail) {
+                            g.fillOval(x1-r/2,y1-r/2,r,r);
+                        } else {
+                            g.fillOval(xx-r/2,yy-r/2,r,r);
+                        }
                         System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
                     }
                 }
@@ -316,10 +323,12 @@ public class TurntableIcon extends Icon {
             System.out.format("Speed: %d, Track: %d, Head: %b%n", speed, track, head);
             Status oldStatus = _status;
             int oldTrack = _currentTrack;
+            boolean oldHeadOrTail = _headOrTail;
             if (speed == 0 && track != -1) {
                 // Turntable at a track
                 _status = Status.Track;
                 _currentTrack = track;
+                _headOrTail = head;
             } else if (speed != 0) {
                 // Turntable moving
                 _status = Status.Moving;
@@ -328,7 +337,7 @@ public class TurntableIcon extends Icon {
                 _status = Status.NoTrack;
             }
 
-            if (_status != oldStatus || _currentTrack != oldTrack) {
+            if (_status != oldStatus || _currentTrack != oldTrack || oldHeadOrTail) {
                 CorleoneControlpanel.repaint();
             }
         }
