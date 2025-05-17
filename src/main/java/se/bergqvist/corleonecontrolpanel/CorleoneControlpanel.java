@@ -28,6 +28,12 @@ public class CorleoneControlpanel {
     private static final List<MainJFrame> _frames = new ArrayList<>();
 
 
+    public static void repaint() {
+        for (MainJFrame f : _frames) {
+            f.repaint();
+        }
+    }
+
     public static void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
         for (MainJFrame f : _frames) {
             f.setShowSelectScreen(show, onlyOneTouchscreen);

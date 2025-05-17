@@ -112,7 +112,9 @@ public class Turntable implements Runnable {
         while (true) {
             try {
                 String line = readLine();
-                System.out.println(line);
+                if (!line.startsWith("#INFO: ")) {
+                    System.out.println(line);
+                }
 
                 if (line.startsWith("#INFO: ")) {
 //                    Pattern pattern = Pattern.compile("^\\#INFO\\: (\\d+) (\\w\\w) (\\d+) (\\w+) (\\w|\\s)");

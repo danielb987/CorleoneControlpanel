@@ -3,12 +3,19 @@ package se.bergqvist.controlpanel.icons;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Shape;
+import java.awt.geom.QuadCurve2D;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jdom2.Element;
+import se.bergqvist.corleonecontrolpanel.CorleoneControlpanel;
+import se.bergqvist.turntable.Turntable;
+import se.bergqvist.turntable.Turntable.TurntableListener;
 
 /**
  * Icon on control panel.
@@ -39,6 +46,7 @@ public class TurntableIcon extends Icon {
 
     private static final int NUM = 3;
     private static final int MY_SIZE = NUM * Icon.RASTER_SIZE - Icon.RASTER_MARGIN;
+    private static final int SUB = 10;
 
     private final Component _component;
     private final Type _type;
@@ -47,7 +55,6 @@ public class TurntableIcon extends Icon {
     private final int _height;
     private final Graphics2D _graphics;
     private final Image _image;
-    private final Map<Integer, Integer> _trackNoMap = new HashMap<>();
 
 
     public static void initialize(Component c) {
@@ -76,29 +83,6 @@ public class TurntableIcon extends Icon {
         _graphics.setColor(Color.WHITE);
         _graphics.fillRect(0, 0, MY_SIZE, MY_SIZE);
         _graphics.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-/*
-        _graphics.setColor(Color.BLACK);
-        for (int x=0; x < 3; x++) {
-            _graphics.drawLine(x*SIZE, 0, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(x*SIZE+SIZE/2, 0, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(x*SIZE+SIZE-1, 0, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(x*SIZE, _height*SIZE-1, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(x*SIZE+SIZE/2, _height*SIZE-1, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(x*SIZE+SIZE-1, _height*SIZE-1, _width*SIZE/2+1, _height*SIZE/2+1);
-        }
-        for (int y=0; y < 3; y++) {
-            _graphics.drawLine(0, y*SIZE, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(0, y*SIZE+SIZE/2, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(0, y*SIZE+SIZE-1, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(_width*SIZE-1, y*SIZE, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(_width*SIZE-1, y*SIZE+SIZE/2, _width*SIZE/2+1, _height*SIZE/2+1);
-            _graphics.drawLine(_width*SIZE-1, y*SIZE+SIZE-1, _width*SIZE/2+1, _height*SIZE/2+1);
-        }
-*/
-        int sub = 10;
-//        int sub = 60;
-
-//        _graphics.drawLine(0, _height*RASTER_SIZE-RASTER_MARGIN, _width*RASTER_SIZE-RASTER_MARGIN, 0);
 
         _graphics.setColor(Color.RED);
 //        _graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -122,9 +106,9 @@ public class TurntableIcon extends Icon {
         }
 
         _graphics.setColor(Color.WHITE);
-        _graphics.fillOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
+        _graphics.fillOval(SUB, SUB, _width*RASTER_SIZE-SUB*2, _height*RASTER_SIZE-SUB*2);
         _graphics.setColor(Color.BLACK);
-        _graphics.drawOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
+        _graphics.drawOval(SUB, SUB, _width*RASTER_SIZE-SUB*2, _height*RASTER_SIZE-SUB*2);
     }
 
     @Override
@@ -162,27 +146,117 @@ public class TurntableIcon extends Icon {
         return new TurntableIconData(this);
     }
 
-    public void setTrackNo(int connection, int trackNo) {
-        _trackNoMap.put(connection, trackNo);
+
+    private enum Status {
+        Track,
+        NoTrack,
+        Moving
     }
 
 
-    public int getTrackNo(int connection) {
-        return _trackNoMap.get(connection);
-    }
-
-
-    private static class TurntableIconData extends AbstractIconData {
+    private static class TurntableIconData extends AbstractIconData
+            implements TurntableListener {
 
         private final TurntableIcon _icon;
+        private final Map<Integer, Integer> _headTrackNoMap = new HashMap<>();
+        private final Map<Integer, Integer> _tailTrackNoMap = new HashMap<>();
+        private Status _status = Status.NoTrack;
+        private int _currentTrack;
+
 
         private TurntableIconData(TurntableIcon icon) {
             this._icon = icon;
+            Turntable.get().addListener(this);
         }
+
+        private Font _noTrackFont;
+        private Font _movingFont;
 
         @Override
         public void draw(Graphics2D g, int x, int y) {
             _icon.draw(g, x, y, -1);
+            Font oldFont = g.getFont();
+            switch (_status) {
+                case NoTrack -> {
+                    if (_noTrackFont == null) {
+                        _noTrackFont = new Font("Cantarell", Font.BOLD, 100);
+                    }   g.setFont(_noTrackFont);
+                    g.drawString("?", x+50, y+105);
+                }
+                case Moving -> {
+                    if (_movingFont == null) {
+                        _movingFont = new Font("Cantarell", Font.BOLD, 40);
+                    }   g.setFont(_movingFont);
+                    g.drawString("Move", x+20, y+80);
+                }
+                case Track -> {
+                    int head = -1;
+                    int tail = -1;
+                    for (int i=0; i < POSITIONS.length; i++) {
+//                        System.out.format("%2d: %8x, %8x, %8x, %b%n", i, connectingBits, 1 << i, connectingBits & (1 << i), (connectingBits & (1 << i)) != 0);
+                        Integer headTrack = _headTrackNoMap.get(i);
+                        Integer tailTrack = _tailTrackNoMap.get(i);
+                        System.err.format("track: %s, _currentTrack: %d%n", headTrack, _currentTrack);
+                        if (headTrack != null && headTrack == _currentTrack) {
+                            head = i;
+                        }
+                        if (tailTrack != null && tailTrack == _currentTrack) {
+                            tail = i;
+                        }
+                    }
+                    if (head != -1 && tail != -1) {
+                        System.out.format("Head: %d, Tail: %d, Track: %d%n", head, tail, _currentTrack);
+                        double w = MY_SIZE;
+                        double h = MY_SIZE;
+                        double w2 = MY_SIZE / 2.0;
+                        double h2 = MY_SIZE / 2.0;
+                        int x1 = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[head]))*(w2-SUB));
+                        int y1 = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[head]))*(h2-SUB));
+                        int xx = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[tail]))*(w2-SUB));
+                        int yy = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[tail]))*(h2-SUB));
+                        g.setColor(Color.red);
+                        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        // Draw a beziercurve
+                        Shape s = new QuadCurve2D.Double(x1, y1, x+w2, y+h2, xx, yy);
+                        g.draw(s);
+                        System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
+                    }
+                }
+                default -> {
+                    throw new RuntimeException(String.format("_status has unknown value: %s", _status));
+                }
+            }
+            g.setFont(oldFont);
+
+            if (1 == 1) return;
+
+
+            String ss = String.format("%s: %d", _status.name(), _currentTrack);
+//            g.setColor(Color.WHITE);
+//            g.fillRect(0, 0, 1600, 1200);
+            g.setFont(new Font("Cantarell", Font.BOLD, 22));
+            g.drawString(String.format("%s: %d", _status.name(), _currentTrack), x+50, y+MY_SIZE/2);
+
+            if (1 == 1) return;
+
+            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+            g.setColor(Color.BLACK);
+            int xx = 0;
+            int yy = 0;
+            for (String f : fonts) {
+                if ("Droid Sans Fallback".equals(f)) continue;
+
+                System.out.println(f);
+//                g.setFont(new Font(f, Font.BOLD, 22));
+                g.setFont(new Font(f, Font.BOLD, 30));
+                g.drawString(ss+" "+f, xx, yy + 100);
+                yy += 50;
+                if (yy > 800) {
+                    yy = 0;
+                    xx += 600;
+                }
+            }
         }
 
         @Override
@@ -204,10 +278,22 @@ public class TurntableIcon extends Icon {
         public Element getXml(int x, int y) {
             Element e = super.getXml(x, y);
             e.setAttribute("connectingBits", Integer.toHexString(_icon._connectingBits));
-            for (var entry : _icon._trackNoMap.entrySet()) {
+
+            Map<Integer, Map.Entry<Integer, Integer>> trackMap = new HashMap<>();
+            for (var entry : _headTrackNoMap.entrySet()) {
+                trackMap.put(entry.getValue(), new HashMap.SimpleEntry<>(entry.getKey(), -1));
+            }
+            for (var entry : _tailTrackNoMap.entrySet()) {
+                Map.Entry<Integer, Integer> headTailEntry = trackMap.get(entry.getValue());
+                headTailEntry.setValue(entry.getKey());
+            }
+
+//            for (var entry : _headTrackNoMap.entrySet()) {
+            for (var entry : trackMap.entrySet()) {
                 Element track = new Element("Track");
-                track.setAttribute("connection", Integer.toString(entry.getKey()));
-                track.setAttribute("trackNo", Integer.toString(entry.getValue()));
+                track.setAttribute("head", Integer.toString(entry.getValue().getKey()));
+                track.setAttribute("tail", Integer.toString(entry.getValue().getValue()));
+                track.setAttribute("trackNo", Integer.toString(entry.getKey()));
                 e.addContent(track);
             }
             return e;
@@ -217,10 +303,50 @@ public class TurntableIcon extends Icon {
         public void loadXml(Element iconData) {
             super.loadXml(iconData);
             for (Element track : iconData.getChildren("Track")) {
-                int connection = Integer.parseInt(track.getAttributeValue("connection"));
+                int head = Integer.parseInt(track.getAttributeValue("head"));
+                int tail = Integer.parseInt(track.getAttributeValue("tail"));
                 int trackNo = Integer.parseInt(track.getAttributeValue("trackNo"));
-                _icon._trackNoMap.put(connection, trackNo);
+                _headTrackNoMap.put(head, trackNo);
+                _tailTrackNoMap.put(tail, trackNo);
             }
+        }
+
+        @Override
+        public void info(int speed, boolean direction, int pos, int track, boolean head) {
+            System.out.format("Speed: %d, Track: %d, Head: %b%n", speed, track, head);
+            Status oldStatus = _status;
+            int oldTrack = _currentTrack;
+            if (speed == 0 && track != -1) {
+                // Turntable at a track
+                _status = Status.Track;
+                _currentTrack = track;
+            } else if (speed != 0) {
+                // Turntable moving
+                _status = Status.Moving;
+            } else {
+                // Turntable stopped but not at a track
+                _status = Status.NoTrack;
+            }
+
+            if (_status != oldStatus || _currentTrack != oldTrack) {
+                CorleoneControlpanel.repaint();
+            }
+        }
+
+        public void setHeadTrackNo(int head, int trackNo) {
+            _headTrackNoMap.put(head, trackNo);
+        }
+
+        public int getHeadTrackNo(int head) {
+            return _headTrackNoMap.get(head);
+        }
+
+        public void setTailTrackNo(int tail, int trackNo) {
+            _tailTrackNoMap.put(tail, trackNo);
+        }
+
+        public int getTailTrackNo(int tail) {
+            return _tailTrackNoMap.get(tail);
         }
 
     }
