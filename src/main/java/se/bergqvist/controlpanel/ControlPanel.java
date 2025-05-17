@@ -29,7 +29,7 @@ public final class ControlPanel implements TurnoutListener {
 //    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
     private static final int RASTER_Y0 = 60;
     private static final int RASTER_NUM_X = 41;
-    private static final int RASTER_NUM_Y = 11;
+    private static final int RASTER_NUM_Y = 12;
     private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
     private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
 
@@ -101,7 +101,7 @@ public final class ControlPanel implements TurnoutListener {
             Stroke stroke = new BasicStroke(1.0f);
             g.setStroke(stroke);
 
-            int y = 500;
+            int y = RASTER_MAX_Y;
             for (LineIcon.Type type : LineIcon.Type.values()) {
                 count = 0;
     //            y += 50;
@@ -285,15 +285,11 @@ public final class ControlPanel implements TurnoutListener {
             int y = Integer.parseInt(iconElement.getAttributeValue("y"));
             Icon.Type type = Icon.Type.valueOf(iconElement.getAttributeValue("type"));
             int bits = Integer.parseInt(iconElement.getAttributeValue("bits"));
-/*
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = iconElement.getAttributeValue("x");
-            int x = iconElement.getAttributeValue("x");
-*/
             Icon i = Icon.get(type, bits);
+            if (iconElement.getAttributeValue("connectingBits") != null) {
+                int connectingBits = Integer.parseInt(iconElement.getAttributeValue("connectingBits"), 16);
+                i = i.createIcon(connectingBits);
+            }
             IconData id = i.createIconData();
             id.loadXml(iconElement);
             iconData[x][y] = id;

@@ -82,7 +82,7 @@ public class CorleoneControlpanel {
             LineIcon.initialize(tempFrame);
             TurnoutIcon.initialize(tempFrame);
             TurntableIcon.initialize(tempFrame);
-            tempFrame.dispose();
+//            tempFrame.dispose();  // Keep the frame since we need it later
 
             // TODO:
             // Save and restore map between touch and screen

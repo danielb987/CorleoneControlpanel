@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jdom2.Element;
 
 /**
  * Icon on control panel.
@@ -39,7 +40,9 @@ public class TurntableIcon extends Icon {
     private static final int NUM = 3;
     private static final int MY_SIZE = NUM * Icon.RASTER_SIZE - Icon.RASTER_MARGIN;
 
+    private final Component _component;
     private final Type _type;
+    private final int _connectingBits;
     private final int _width;
     private final int _height;
     private final Graphics2D _graphics;
@@ -56,7 +59,13 @@ public class TurntableIcon extends Icon {
     }
 
     private TurntableIcon(Component component, Type type) {
+        this(component, type, 0x00FFFFFF);
+    }
+
+    private TurntableIcon(Component component, Type type, int connectingBits) {
+        this._component = component;
         this._type = type;
+        this._connectingBits = connectingBits;
         this._width = 3;
         this._height = 3;
         _image = component.createImage(MY_SIZE, MY_SIZE);
@@ -86,10 +95,6 @@ public class TurntableIcon extends Icon {
 */
         int sub = 10;
 //        int sub = 60;
-        _graphics.setColor(Color.WHITE);
-        _graphics.fillOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
-        _graphics.setColor(Color.BLACK);
-        _graphics.drawOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
 
 //        _graphics.drawLine(0, _height*RASTER_SIZE-RASTER_MARGIN, _width*RASTER_SIZE-RASTER_MARGIN, 0);
 
@@ -106,11 +111,23 @@ public class TurntableIcon extends Icon {
 
         _graphics.setColor(Color.BLACK);
         for (int i=0; i < POSITIONS.length; i++) {
-            int x = (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[i]))*w);
-            int y = (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[i]))*h);
-            _graphics.drawLine(x, y, x1, y1);
+            System.out.format("%2d: %8x, %8x, %8x, %b%n", i, connectingBits, 1 << i, connectingBits & (1 << i), (connectingBits & (1 << i)) != 0);
+            if ((connectingBits & (1 << i)) != 0) {
+                int x = (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[i]))*w);
+                int y = (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[i]))*h);
+                _graphics.drawLine(x, y, x1, y1);
+            }
         }
 
+        _graphics.setColor(Color.WHITE);
+        _graphics.fillOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
+        _graphics.setColor(Color.BLACK);
+        _graphics.drawOval(sub, sub, _width*RASTER_SIZE-sub*2, _height*RASTER_SIZE-sub*2);
+    }
+
+    @Override
+    public Icon createIcon(int connectingBits) {
+        return new TurntableIcon(_component, _type, connectingBits);
     }
 
     @Override
@@ -170,6 +187,13 @@ public class TurntableIcon extends Icon {
         @Override
         public Icon getIcon() {
             return _icon;
+        }
+
+        @Override
+        public Element getXml(int x, int y) {
+            Element e = super.getXml(x, y);
+            e.setAttribute("connectingBits", Integer.toHexString(_icon._connectingBits));
+            return e;
         }
 
     }
