@@ -47,6 +47,8 @@ public class TurntableIcon extends Icon {
     private final int _height;
     private final Graphics2D _graphics;
     private final Image _image;
+    private final Map<Integer, Integer> _trackNoMap = new HashMap<>();
+
 
     public static void initialize(Component c) {
         addIcon(mapList, new TurntableIcon(c, Type.WyeSlip));
@@ -160,6 +162,15 @@ public class TurntableIcon extends Icon {
         return new TurntableIconData(this);
     }
 
+    public void setTrackNo(int connection, int trackNo) {
+        _trackNoMap.put(connection, trackNo);
+    }
+
+
+    public int getTrackNo(int connection) {
+        return _trackNoMap.get(connection);
+    }
+
 
     private static class TurntableIconData extends AbstractIconData {
 
@@ -193,7 +204,23 @@ public class TurntableIcon extends Icon {
         public Element getXml(int x, int y) {
             Element e = super.getXml(x, y);
             e.setAttribute("connectingBits", Integer.toHexString(_icon._connectingBits));
+            for (var entry : _icon._trackNoMap.entrySet()) {
+                Element track = new Element("Track");
+                track.setAttribute("connection", Integer.toString(entry.getKey()));
+                track.setAttribute("trackNo", Integer.toString(entry.getValue()));
+                e.addContent(track);
+            }
             return e;
+        }
+
+        @Override
+        public void loadXml(Element iconData) {
+            super.loadXml(iconData);
+            for (Element track : iconData.getChildren("Track")) {
+                int connection = Integer.parseInt(track.getAttributeValue("connection"));
+                int trackNo = Integer.parseInt(track.getAttributeValue("trackNo"));
+                _icon._trackNoMap.put(connection, trackNo);
+            }
         }
 
     }
