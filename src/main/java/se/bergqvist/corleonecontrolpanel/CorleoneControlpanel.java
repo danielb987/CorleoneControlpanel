@@ -44,16 +44,6 @@ public class CorleoneControlpanel {
         return Config.get().switchTouchscreen();
     }
 
-    private static boolean hasTurntable() {
-        try {
-            Turntable.get();
-            return true;
-        } catch (ExceptionInInitializerError e) {
-            System.out.println("No connection to turntable");
-            return false;
-        }
-    }
-
     public static void main(String[] args) {
 
         /* Set the Nimbus look and feel */
@@ -139,7 +129,7 @@ public class CorleoneControlpanel {
 
 
 
-            if (hasTurntable()) {
+            if (Turntable.get().hasTurntable()) {
                 new TurntableFrame().setVisible(true);
             }
 

@@ -34,16 +34,23 @@ public class Turntable implements Runnable {
 
     private final List<TurntableListener> _listeners = new ArrayList<>();
     private final SerialPort _serialPort;
-//    private Reader _reader;
     private BufferedReader _reader;
     private PrintWriter _writer;
+
 
     public static Turntable get() {
         return GET_INSTANCE.INSTANCE;
     }
 
     public Turntable() {
-        _serialPort = new SerialPort(PORTNAME);
+        SerialPort port;
+        try {
+            port = new SerialPort(PORTNAME);
+        } catch (Exception e) {
+            port = null;
+            System.out.println("No serial port");
+        }
+        _serialPort = port;
 
         int MAX = 48000;
         double diameter = 130 * 12 * 25.4 / 160;
@@ -54,29 +61,31 @@ public class Turntable implements Runnable {
     }
 
     public Turntable init() {
-//        _reader = new InputStreamReader(_serialPort.getInputStream());
-        _reader = new BufferedReader(new InputStreamReader(_serialPort.getInputStream()));
-        _writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_serialPort.getOutputStream())));
-        new Thread(this).start();
-//        _writer.print("Hello\r");
-        _writer.print("!LOCALTION MAX\r");
-        _writer.flush();
-        try { Thread.sleep(100); } catch (InterruptedException e) {}
-        _writer.print("!AUTO\r");
-        _writer.flush();
-        try { Thread.sleep(100); } catch (InterruptedException e) {}
-        _writer.print("!AUTO 10\r");
-        _writer.flush();
-        try { Thread.sleep(100); } catch (InterruptedException e) {}
-//        _writer.print("!AUTO 100\r");
-//        _writer.print("!AUTO 200\r");
-//        _writer.print("!AUTO 001\r");
-        _writer.flush();
-        try { Thread.sleep(100); } catch (InterruptedException e) {}
-//        _writer.print("Hello\r");
-//        _writer.print("Hello\r");
-        System.out.println("Testar att vändskivan är igång");
+        if (_serialPort != null) {
+            _reader = new BufferedReader(new InputStreamReader(_serialPort.getInputStream()));
+            _writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_serialPort.getOutputStream())));
+            new Thread(this).start();
+            _writer.print("!LOCALTION MAX\r");
+            _writer.flush();
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            _writer.print("!AUTO\r");
+            _writer.flush();
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            _writer.print("!AUTO 10\r");
+            _writer.flush();
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+    //        _writer.print("!AUTO 100\r");
+    //        _writer.print("!AUTO 200\r");
+    //        _writer.print("!AUTO 001\r");
+            _writer.flush();
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            System.out.println("Testar att vändskivan är igång");
+        }
         return this;
+    }
+
+    public boolean hasTurntable() {
+        return _serialPort != null;
     }
 
 
@@ -149,24 +158,32 @@ public class Turntable implements Runnable {
     }
 
     public void runHome() {
-        _writer.format("!RUN HOME\r");
-        _writer.flush();
+        if (_serialPort != null) {
+            _writer.format("!RUN HOME\r");
+            _writer.flush();
+        }
     }
 
     public void gotoTrack(int track, boolean head) {
-        _writer.format("!TRACK %02d %s\r", track, head ? "HEAD" : "TAIL");
-        _writer.flush();
+        if (_serialPort != null) {
+            _writer.format("!TRACK %02d %s\r", track, head ? "HEAD" : "TAIL");
+            _writer.flush();
+        }
     }
 
 
     public void gotoPosition(int pos) {
-        _writer.format("!RUN %05d\r", pos);
-        _writer.flush();
+        if (_serialPort != null) {
+            _writer.format("!RUN %05d\r", pos);
+            _writer.flush();
+        }
     }
 
     public void program(int track) {
-        _writer.format("!PROGRAM %02d\r", track);
-        _writer.flush();
+        if (_serialPort != null) {
+            _writer.format("!PROGRAM %02d\r", track);
+            _writer.flush();
+        }
     }
 
 
