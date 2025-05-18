@@ -173,65 +173,71 @@ public class TurntableIcon extends Icon {
         private Font _noTrackFont;
         private Font _movingFont;
 
+        private void drawMoving(Graphics2D g, int x, int y) {
+            if (_movingFont == null) {
+                _movingFont = new Font("Cantarell", Font.BOLD, 40);
+            }   g.setFont(_movingFont);
+            g.drawString("Move", x+20, y+80);
+        }
+
+        private void drawNoTrack(Graphics2D g, int x, int y) {
+            if (_noTrackFont == null) {
+                _noTrackFont = new Font("Cantarell", Font.BOLD, 100);
+            }   g.setFont(_noTrackFont);
+            g.drawString("?", x+50, y+105);
+        }
+
+        private void drawTrack(Graphics2D g, int x, int y) {
+            int head = -1;
+            int tail = -1;
+            for (int i=0; i < POSITIONS.length; i++) {
+                Integer headTrack = _headTrackNoMap.get(i);
+                Integer tailTrack = _tailTrackNoMap.get(i);
+                System.err.format("track: %s, _currentTrack: %d%n", headTrack, _currentTrack);
+                if (headTrack != null && headTrack == _currentTrack) {
+                    head = i;
+                }
+                if (tailTrack != null && tailTrack == _currentTrack) {
+                    tail = i;
+                }
+            }
+            if (head != -1 && tail != -1) {
+                System.out.format("Head: %d, Tail: %d, Track: %d%n", head, tail, _currentTrack);
+                double w = MY_SIZE;
+                double h = MY_SIZE;
+                double w2 = MY_SIZE / 2.0;
+                double h2 = MY_SIZE / 2.0;
+                int x1 = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[head]))*(w2-SUB));
+                int y1 = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[head]))*(h2-SUB));
+                int xx = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[tail]))*(w2-SUB));
+                int yy = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[tail]))*(h2-SUB));
+                g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                // Draw a beziercurve
+                Shape s = new QuadCurve2D.Double(x1, y1, x+w2, y+h2, xx, yy);
+                g.draw(s);
+                int r = 20;
+                g.setColor(Color.red);
+                if (_headOrTail) {
+                    g.fillOval(x1-r/2,y1-r/2,r,r);
+                } else {
+                    g.fillOval(xx-r/2,yy-r/2,r,r);
+                }
+                System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
+            } else {
+                drawNoTrack(g, x, y);
+            }
+        }
+
         @Override
         public void draw(Graphics2D g, int x, int y) {
             _icon.draw(g, x, y, -1);
             Font oldFont = g.getFont();
             switch (_status) {
-                case NoTrack -> {
-                    if (_noTrackFont == null) {
-                        _noTrackFont = new Font("Cantarell", Font.BOLD, 100);
-                    }   g.setFont(_noTrackFont);
-                    g.drawString("?", x+50, y+105);
-                }
-                case Moving -> {
-                    if (_movingFont == null) {
-                        _movingFont = new Font("Cantarell", Font.BOLD, 40);
-                    }   g.setFont(_movingFont);
-                    g.drawString("Move", x+20, y+80);
-                }
-                case Track -> {
-                    int head = -1;
-                    int tail = -1;
-                    for (int i=0; i < POSITIONS.length; i++) {
-//                        System.out.format("%2d: %8x, %8x, %8x, %b%n", i, connectingBits, 1 << i, connectingBits & (1 << i), (connectingBits & (1 << i)) != 0);
-                        Integer headTrack = _headTrackNoMap.get(i);
-                        Integer tailTrack = _tailTrackNoMap.get(i);
-                        System.err.format("track: %s, _currentTrack: %d%n", headTrack, _currentTrack);
-                        if (headTrack != null && headTrack == _currentTrack) {
-                            head = i;
-                        }
-                        if (tailTrack != null && tailTrack == _currentTrack) {
-                            tail = i;
-                        }
-                    }
-                    if (head != -1 && tail != -1) {
-                        System.out.format("Head: %d, Tail: %d, Track: %d%n", head, tail, _currentTrack);
-                        double w = MY_SIZE;
-                        double h = MY_SIZE;
-                        double w2 = MY_SIZE / 2.0;
-                        double h2 = MY_SIZE / 2.0;
-                        int x1 = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[head]))*(w2-SUB));
-                        int y1 = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[head]))*(h2-SUB));
-                        int xx = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[tail]))*(w2-SUB));
-                        int yy = y + (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[tail]))*(h2-SUB));
-                        g.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-                        // Draw a beziercurve
-                        Shape s = new QuadCurve2D.Double(x1, y1, x+w2, y+h2, xx, yy);
-                        g.draw(s);
-                        int r = 20;
-                        g.setColor(Color.red);
-                        if (_headOrTail) {
-                            g.fillOval(x1-r/2,y1-r/2,r,r);
-                        } else {
-                            g.fillOval(xx-r/2,yy-r/2,r,r);
-                        }
-                        System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
-                    }
-                }
-                default -> {
+                case Moving -> drawMoving(g, x, y);
+                case NoTrack -> drawNoTrack(g, x, y);
+                case Track -> drawTrack(g, x, y);
+                default ->
                     throw new RuntimeException(String.format("_status has unknown value: %s", _status));
-                }
             }
             g.setFont(oldFont);
 
