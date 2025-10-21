@@ -67,7 +67,7 @@ public class MainJPanel extends JPanel implements MouseListener {
     }
 
     public void touchEvent(TouchEvent event) {
-        System.out.format("touchEvent: %s: %d, %d%n", event.getType(), event.getX(), event.getY());
+//        System.out.format("touchEvent: %s: %d, %d%n", event.getType(), event.getX(), event.getY());
         this.x = (int) (((double)event.getX()) * bounds.width / TOUCH_WIDTH);
         this.y = (int) (((double)event.getY()) * bounds.height / TOUCH_HEIGHT);
         this.ex = event.getX();
@@ -78,8 +78,8 @@ public class MainJPanel extends JPanel implements MouseListener {
     }
 
     public void handleEvent(TouchEnum type, int x, int y, EventListener listener) {
-        System.out.format("handleEvent: %s: %d, %d%n", type, x, y);
-        System.out.flush();
+//        System.out.format("handleEvent: %s: %d, %d%n", type, x, y);
+//        System.out.flush();
 
         if (_showSelectScreen) {
             CorleoneControlpanel.setShowSelectScreen(false, false);

@@ -189,7 +189,13 @@ public class TurnoutIcon extends Icon {
 
         @Override
         public void draw(Graphics2D g, int x, int y) {
-            _icon.draw(g, x, y, _state+1);
+            int theState;
+            if (isInverted()) {
+                theState = getNextState();
+            } else {
+                theState = _state;
+            }
+            _icon.draw(g, x, y, theState+1);
         }
 
         /**
@@ -198,13 +204,15 @@ public class TurnoutIcon extends Icon {
          */
         @Override
         public boolean click() {
-            int nextState = getNextState();
+//            int nextState = getNextState();
             int address = getAddress();
             if (getMasterAddress() != 0) {
                 address = getMasterAddress();
             }
-            boolean thrown = (nextState != 0) ^ isInverted();
-            Layout.get().setTurnout(address, thrown);
+            Layout.get().setTurnout(address, ! Layout.get().getTurnout(address));
+//            boolean thrown = (nextState != 0) ^ isInverted();
+//            boolean thrown = (nextState != 0);
+//            Layout.get().setTurnout(address, thrown);
             return false;
         }
 

@@ -1,6 +1,5 @@
 package se.bergqvist.controlpanel.icons;
 
-import java.util.List;
 import org.jdom2.Element;
 
 /**
@@ -78,6 +77,12 @@ public abstract class AbstractIconData implements IconData {
         String invertedElem = iconData.getAttributeValue("Inverted");
         if (invertedElem != null) {
             _inverted = invertedElem.equals("yes");
+        }
+
+//        if (1==1) return;
+        switch (_address) {
+            case 411, 412 -> _inverted = true;
+//            case 101, 102, 105, 111 -> _inverted = false;
         }
     }
 

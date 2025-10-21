@@ -74,6 +74,8 @@ public class Layout {
 
             int newState = value ? 4 : 2;
 
+            System.out.format("Set turnout %d to %d%n", turnout, newState);
+
             HttpRequest request = HttpRequest.newBuilder()
                       .uri(new URI("http://localhost:12080/json/turnout/" + encodeValue(turnoutStr)))
                     .version(HttpClient.Version.HTTP_2)

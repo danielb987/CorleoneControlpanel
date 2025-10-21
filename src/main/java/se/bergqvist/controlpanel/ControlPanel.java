@@ -162,6 +162,8 @@ public final class ControlPanel implements TurnoutListener {
     }
 
     private void drawControlPanel(Graphics2D g) {
+        System.err.format("ControlPanel.drawControlPanel()%n");
+//        if (1==1) throw new RuntimeException("Daniel");
         Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
         Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 //        g.setColor(Color.BLACK);

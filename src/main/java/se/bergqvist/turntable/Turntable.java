@@ -118,6 +118,12 @@ public class Turntable implements Runnable {
 
     @Override
     public void run() {
+        int lastSpeed = -1;
+        boolean lastDirection = false;
+        int lastPos = -1;
+        int lastTrack = -1;
+        boolean lastHead = false;
+
         while (true) {
             try {
                 String line = readLine();
@@ -142,11 +148,26 @@ public class Turntable implements Runnable {
                         }
                         boolean head = "H".equals(matcher.group(5));
                         int tempTrack = track;
-                        java.awt.EventQueue.invokeLater(() -> {
-                            for (var l : _listeners) {
-                                l.info(speed, direction, pos, tempTrack, head);
-                            }
-                        });
+
+                        if (
+                                lastSpeed != speed ||
+                                lastDirection != direction ||
+                                lastPos != pos ||
+                                lastTrack != track ||
+                                lastHead != head
+                                ) {
+                            java.awt.EventQueue.invokeLater(() -> {
+                                for (var l : _listeners) {
+                                    l.info(speed, direction, pos, tempTrack, head);
+                                }
+                            });
+
+                            lastSpeed = speed;
+                            lastDirection = direction;
+                            lastPos = pos;
+                            lastTrack = track;
+                            lastHead = head;
+                        }
                     }
                 }
             } catch (IOException  e) {

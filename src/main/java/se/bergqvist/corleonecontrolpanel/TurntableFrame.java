@@ -46,11 +46,18 @@ public class TurntableFrame extends javax.swing.JFrame
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        jButton_ProgramTrack2 = new javax.swing.JButton();
+        jButton_ProgramTrack3 = new javax.swing.JButton();
         jButton_Track3head = new javax.swing.JButton();
         jButton_Track3tail = new javax.swing.JButton();
         jButton_RunHome = new javax.swing.JButton();
+        jButton_Track4head = new javax.swing.JButton();
+        jButton_Track4tail = new javax.swing.JButton();
+        jButton_Track5head = new javax.swing.JButton();
+        jButton_Track5tail = new javax.swing.JButton();
+        jButton_ProgramTrack1 = new javax.swing.JButton();
+        jButton_ProgramTrack4 = new javax.swing.JButton();
+        jButton_ProgramTrack5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -138,17 +145,17 @@ public class TurntableFrame extends javax.swing.JFrame
             }
         });
 
-        jButton6.setText("Program track 2");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        jButton_ProgramTrack2.setText("Program track 2");
+        jButton_ProgramTrack2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                jButton_ProgramTrack2ActionPerformed(evt);
             }
         });
 
-        jButton7.setText("Program track 3");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        jButton_ProgramTrack3.setText("Program track 3");
+        jButton_ProgramTrack3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                jButton_ProgramTrack3ActionPerformed(evt);
             }
         });
 
@@ -173,6 +180,55 @@ public class TurntableFrame extends javax.swing.JFrame
             }
         });
 
+        jButton_Track4head.setText("Track 4 head");
+        jButton_Track4head.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Track4headActionPerformed(evt);
+            }
+        });
+
+        jButton_Track4tail.setText("Track 4 tail");
+        jButton_Track4tail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Track4tailActionPerformed(evt);
+            }
+        });
+
+        jButton_Track5head.setText("Track 5 head");
+        jButton_Track5head.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Track5headActionPerformed(evt);
+            }
+        });
+
+        jButton_Track5tail.setText("Track 5 tail");
+        jButton_Track5tail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Track5tailActionPerformed(evt);
+            }
+        });
+
+        jButton_ProgramTrack1.setText("Program track 1");
+        jButton_ProgramTrack1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ProgramTrack1ActionPerformed(evt);
+            }
+        });
+
+        jButton_ProgramTrack4.setText("Program track 4");
+        jButton_ProgramTrack4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ProgramTrack4ActionPerformed(evt);
+            }
+        });
+
+        jButton_ProgramTrack5.setText("Program track 5");
+        jButton_ProgramTrack5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ProgramTrack5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,8 +236,47 @@ public class TurntableFrame extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jLabel3))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField_Direction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField_Position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField_Track, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField_Head, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField_Speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton_Track4head)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_Track4tail))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton_Track5head)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_Track5tail)))
+                                .addGap(331, 331, 331)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton2))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton4))
+                                    .addComponent(jButton5)
+                                    .addComponent(jButton_RunHome)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton_Track2head)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -195,43 +290,17 @@ public class TurntableFrame extends javax.swing.JFrame
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton_Track3tail))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(32, 32, 32)
-                                .addComponent(jLabel3))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addContainerGap()
+                        .addComponent(jButton_ProgramTrack1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField_Direction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField_Position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField_Track, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField_Head, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField_Speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(260, 260, 260)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton4))
-                            .addComponent(jButton5)
-                            .addComponent(jButton_RunHome))))
-                .addContainerGap(29, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton7)
-                .addGap(199, 199, 199))
+                        .addComponent(jButton_ProgramTrack2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_ProgramTrack3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_ProgramTrack4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_ProgramTrack5)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,26 +319,14 @@ public class TurntableFrame extends javax.swing.JFrame
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton_Track3head)
                             .addComponent(jButton_Track3tail))
-                        .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jTextField_Speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(jTextField_Direction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton_Track4head)
+                            .addComponent(jButton_Track4tail))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jTextField_Position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextField_Track, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(jTextField_Head, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton_Track5head)
+                            .addComponent(jButton_Track5tail)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(42, 42, 42)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -283,10 +340,33 @@ public class TurntableFrame extends javax.swing.JFrame
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_RunHome)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField_Speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField_Direction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField_Position, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField_Track, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextField_Head, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_ProgramTrack2)
+                    .addComponent(jButton_ProgramTrack3)
+                    .addComponent(jButton_ProgramTrack1)
+                    .addComponent(jButton_ProgramTrack4)
+                    .addComponent(jButton_ProgramTrack5))
                 .addContainerGap())
         );
 
@@ -333,13 +413,13 @@ public class TurntableFrame extends javax.swing.JFrame
         Turntable.get().gotoPosition(1);
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void jButton_ProgramTrack2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProgramTrack2ActionPerformed
         Turntable.get().program(2);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_jButton_ProgramTrack2ActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void jButton_ProgramTrack3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProgramTrack3ActionPerformed
         Turntable.get().program(3);
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_jButton_ProgramTrack3ActionPerformed
 
     private void jButton_Track3headActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Track3headActionPerformed
         Turntable.get().gotoTrack(3, true);
@@ -352,6 +432,34 @@ public class TurntableFrame extends javax.swing.JFrame
     private void jButton_RunHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RunHomeActionPerformed
         Turntable.get().runHome();
     }//GEN-LAST:event_jButton_RunHomeActionPerformed
+
+    private void jButton_Track4headActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Track4headActionPerformed
+        Turntable.get().gotoTrack(4, true);
+    }//GEN-LAST:event_jButton_Track4headActionPerformed
+
+    private void jButton_Track4tailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Track4tailActionPerformed
+        Turntable.get().gotoTrack(4, false);
+    }//GEN-LAST:event_jButton_Track4tailActionPerformed
+
+    private void jButton_Track5headActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Track5headActionPerformed
+        Turntable.get().gotoTrack(5, true);
+    }//GEN-LAST:event_jButton_Track5headActionPerformed
+
+    private void jButton_Track5tailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Track5tailActionPerformed
+        Turntable.get().gotoTrack(5, false);
+    }//GEN-LAST:event_jButton_Track5tailActionPerformed
+
+    private void jButton_ProgramTrack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProgramTrack1ActionPerformed
+        Turntable.get().program(1);
+    }//GEN-LAST:event_jButton_ProgramTrack1ActionPerformed
+
+    private void jButton_ProgramTrack4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProgramTrack4ActionPerformed
+        Turntable.get().program(4);
+    }//GEN-LAST:event_jButton_ProgramTrack4ActionPerformed
+
+    private void jButton_ProgramTrack5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProgramTrack5ActionPerformed
+        Turntable.get().program(5);
+    }//GEN-LAST:event_jButton_ProgramTrack5ActionPerformed
 
     @Override
     public void info(int speed, boolean direction, int pos, int track, boolean head) {
@@ -368,8 +476,11 @@ public class TurntableFrame extends javax.swing.JFrame
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton_ProgramTrack1;
+    private javax.swing.JButton jButton_ProgramTrack2;
+    private javax.swing.JButton jButton_ProgramTrack3;
+    private javax.swing.JButton jButton_ProgramTrack4;
+    private javax.swing.JButton jButton_ProgramTrack5;
     private javax.swing.JButton jButton_RunHome;
     private javax.swing.JButton jButton_Track1head;
     private javax.swing.JButton jButton_Track1tail;
@@ -377,6 +488,10 @@ public class TurntableFrame extends javax.swing.JFrame
     private javax.swing.JButton jButton_Track2tail;
     private javax.swing.JButton jButton_Track3head;
     private javax.swing.JButton jButton_Track3tail;
+    private javax.swing.JButton jButton_Track4head;
+    private javax.swing.JButton jButton_Track4tail;
+    private javax.swing.JButton jButton_Track5head;
+    private javax.swing.JButton jButton_Track5tail;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
