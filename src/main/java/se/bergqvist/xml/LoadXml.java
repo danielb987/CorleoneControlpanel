@@ -9,9 +9,10 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
+import org.jdom2.input.sax.XMLReaderXSDFactory;
 import org.jdom2.input.sax.XMLReaders;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+// import org.xml.sax.XMLReader;
+// import org.xml.sax.helpers.XMLReaderFactory;
 import se.bergqvist.config.Config;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.log.Logger;
@@ -31,6 +32,7 @@ public class LoadXml {
             LOG.error("IO error reading file: " + ex.getLocalizedMessage());
         } catch (JDOMException ex) {
             LOG.error("JDom exception reading file: " + ex.getLocalizedMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -51,7 +53,17 @@ public class LoadXml {
 //            processingInstructionHRef = null;
 //            processingInstructionType = null;
 
-            SAXBuilder builder = getBuilder();
+
+
+            String schemaFile = "/home/pi/development/GitHub/CorleoneControlpanel/schema/root-1-0.xsd";
+            File xsdfile = new File(schemaFile);
+            XMLReaderJDOMFactory schemafac = new XMLReaderXSDFactory(xsdfile);
+            SAXBuilder builder = new SAXBuilder(schemafac);
+
+
+
+
+//            SAXBuilder builder = getBuilder();
             Document doc = builder.build(new BufferedInputStream(stream));
 //            doc = processInstructions(doc);  // handle any process instructions
             // find root

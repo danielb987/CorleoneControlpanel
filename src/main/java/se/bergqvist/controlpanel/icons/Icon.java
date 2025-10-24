@@ -69,6 +69,10 @@ public abstract class Icon {
         return _iconByTypeList.get(type);
     }
 
+    public Icon createIcon(int connectingBits) {
+        return this;
+    }
+
     public abstract Type getType();
 
     public abstract int getBits();

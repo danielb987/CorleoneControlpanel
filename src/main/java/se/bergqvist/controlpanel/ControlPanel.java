@@ -6,30 +6,36 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.swing.JPanel;
 import org.jdom2.Element;
+import se.bergqvist.config.Config;
+import se.bergqvist.config.Config.ScreenConfig;
 import se.bergqvist.controlpanel.icons.Icon;
 import se.bergqvist.controlpanel.icons.IconData;
+import se.bergqvist.layout.Layout;
+import se.bergqvist.layout.Layout.TurnoutListener;
 import se.bergqvist.log.Logger;
+// import se.bergqvist.loconet.LocoNetTcpClient;
 
 /**
  * Control panel.
  *
  * @author Daniel Bergqvist
  */
-public final class ControlPanel {
+public final class ControlPanel implements TurnoutListener {
 
     private static final int RASTER_X0 = 20;
 //    private static final int RASTER_Y0 = 40 - Icon.RASTER_SIZE;
     private static final int RASTER_Y0 = 60;
     private static final int RASTER_NUM_X = 41;
-    private static final int RASTER_NUM_Y = 11;
+    private static final int RASTER_NUM_Y = 12;
     private static final int RASTER_MAX_X = RASTER_X0 + RASTER_NUM_X * Icon.RASTER_SIZE;
     private static final int RASTER_MAX_Y = RASTER_Y0 + RASTER_NUM_Y * Icon.RASTER_SIZE;
 
     private final IconData[][] iconData = new IconData[RASTER_NUM_X][RASTER_NUM_Y];
+    private final Map<IconData, Position> iconDataMap = new HashMap<>();
+    private final Map<JPanel, ClickStatus> _clickStatusMap = new HashMap<>();
 
     private final List<IconWithPosition> _iconPalette = new ArrayList<>();
     private IconWithPosition _selectedIcon;
@@ -49,6 +55,11 @@ public final class ControlPanel {
                 iconData[x][y] = Icon.get(Icon.Type.Empty).get(0).createIconData();
             }
         }
+    }
+
+    private ControlPanel init() {
+        Layout.get().addListener(this);
+        return this;
     }
 
     private void drawOldControlpanel(Graphics2D g) {
@@ -90,7 +101,7 @@ public final class ControlPanel {
             Stroke stroke = new BasicStroke(1.0f);
             g.setStroke(stroke);
 
-            int y = 500;
+            int y = RASTER_MAX_Y;
             for (LineIcon.Type type : LineIcon.Type.values()) {
                 count = 0;
     //            y += 50;
@@ -151,6 +162,8 @@ public final class ControlPanel {
     }
 
     private void drawControlPanel(Graphics2D g) {
+        System.err.format("ControlPanel.drawControlPanel()%n");
+//        if (1==1) throw new RuntimeException("Daniel");
         Stroke capButtStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
         Stroke capRoundStroke = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 //        g.setColor(Color.BLACK);
@@ -211,13 +224,34 @@ public final class ControlPanel {
         }
     }
 
+
     public void handleControls(int ex, int ey, JPanel panel) {
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
             int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
             int y = (ey - RASTER_Y0) / Icon.RASTER_SIZE;
             System.out.format("x: %d, y: %d, xx: %d, yy: %d%n", x, y, ex, ey);
+
+            ClickStatus clickStatus = _clickStatusMap.computeIfAbsent(panel, k -> new ClickStatus());
+            if (clickStatus._waitForSecondClick) {
+//                clickStatus._firstIconData.secondClick(iconData[x][y]);
+                clickStatus._waitForSecondClick = false;
+            } else {
+                clickStatus._waitForSecondClick = iconData[x][y].click();
+                if (clickStatus._waitForSecondClick) {
+                    clickStatus._firstIconData = iconData[x][y];
+                }
+            }
+//            boolean requireSecondClick = iconData[x][y].click();
+/*
             iconData[x][y].nextState();
             panel.repaint();
+            int address = iconData[x][y].getAddress();
+            if (iconData[x][y].getMasterAddress() != 0) {
+                address = iconData[x][y].getMasterAddress();
+            }
+            boolean thrown = (iconData[x][y].getState() != 0) ^ iconData[x][y].isInverted();
+            Layout.get().setTurnout(address, thrown);
+*/
         }
     }
 
@@ -253,25 +287,63 @@ public final class ControlPanel {
             int y = Integer.parseInt(iconElement.getAttributeValue("y"));
             Icon.Type type = Icon.Type.valueOf(iconElement.getAttributeValue("type"));
             int bits = Integer.parseInt(iconElement.getAttributeValue("bits"));
-/*
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = Integer.parseInt(iconElement.getAttributeValue("x"));
-            int x = iconElement.getAttributeValue("x");
-            int x = iconElement.getAttributeValue("x");
-*/
             Icon i = Icon.get(type, bits);
+            if (iconElement.getAttributeValue("connectingBits") != null) {
+                int connectingBits = Integer.parseInt(iconElement.getAttributeValue("connectingBits"), 16);
+                i = i.createIcon(connectingBits);
+            }
             IconData id = i.createIconData();
             id.loadXml(iconElement);
             iconData[x][y] = id;
         }
     }
 
+    @Override
+    public void state(int turnout, boolean value) {
+        boolean hasChanged = false;
+
+        for (int y=0; y < RASTER_NUM_Y; y++) {
+            for (int x=0; x < RASTER_NUM_X; x++) {
+                if (!this._editControlPanel) {
+                    if (iconData[x][y].getAddress() == turnout) {
+                        iconData[x][y].setState(value ? 1 : 0);
+                        hasChanged = true;
+                    }
+                }
+            }
+        }
+
+        if (hasChanged) {
+            for (ScreenConfig sc : Config.get().getScreenConfigs())  {
+                sc.getFrame().repaint();
+            }
+        }
+    }
+
+
+    public class Position {
+
+        int _x;
+        int _y;
+
+        public Position(int x, int y) {
+            this._x = x;
+            this._y = y;
+        }
+
+        public int getX() {
+            return _x;
+        }
+
+        public int getY() {
+            return _y;
+        }
+    }
+
 
     private static class GET_INSTANCE {
 
-        private static ControlPanel INSTANCE = new ControlPanel();
+        private static ControlPanel INSTANCE = new ControlPanel().init();
 
     }
 
@@ -287,6 +359,11 @@ public final class ControlPanel {
             this._x = x;
             this._y = y;
         }
+    }
+
+    private class ClickStatus {
+        boolean _waitForSecondClick;
+        IconData _firstIconData;
     }
 
     private static final Logger LOG = new Logger(ControlPanel.class);

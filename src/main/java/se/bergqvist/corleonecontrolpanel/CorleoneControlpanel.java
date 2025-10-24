@@ -15,6 +15,7 @@ import se.bergqvist.controlpanel.icons.TurnoutIcon;
 import se.bergqvist.controlpanel.icons.TurntableIcon;
 import se.bergqvist.touch.TouchManager;
 import se.bergqvist.touch.TouchManager.EventListener;
+import se.bergqvist.turntable.Turntable;
 import se.bergqvist.xml.LoadXml;
 
 /**
@@ -26,6 +27,12 @@ public class CorleoneControlpanel {
 
     private static final List<MainJFrame> _frames = new ArrayList<>();
 
+
+    public static void repaint() {
+        for (MainJFrame f : _frames) {
+            f.repaint();
+        }
+    }
 
     public static void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
         for (MainJFrame f : _frames) {
@@ -71,7 +78,7 @@ public class CorleoneControlpanel {
             LineIcon.initialize(tempFrame);
             TurnoutIcon.initialize(tempFrame);
             TurntableIcon.initialize(tempFrame);
-            tempFrame.dispose();
+//            tempFrame.dispose();  // Keep the frame since we need it later
 
             // TODO:
             // Save and restore map between touch and screen
@@ -112,9 +119,18 @@ public class CorleoneControlpanel {
             for (ScreenConfig sc : Config.get().getScreenConfigs())  {
                 Path path = Config.get().getPathForTouchscreen(sc.getPosition());
                 System.out.format("Path: %s%n", path);
-                EventListener listener = TouchManager.create(path, sc.getTouchListener());
-                Config.get().setListenerForTouchscreen(path, listener);
+                if (path != null) {
+                    EventListener listener = TouchManager.create(path, sc.getTouchListener());
+                    Config.get().setListenerForTouchscreen(path, listener);
+                }
                 sc.getFrame().setVisible(true);
+            }
+
+
+
+
+            if (Turntable.get().hasTurntable()) {
+                new TurntableFrame().setVisible(true);
             }
 
         });
