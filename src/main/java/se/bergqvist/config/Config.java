@@ -106,6 +106,10 @@ public class Config {
         }
     }
 
+    public boolean hasTouchScreens() {
+        return !_touchscreenConfigs.isEmpty();
+    }
+
     public Element getXml() {
         Element configuration = new Element("Configuration");
         Element screenConfigs = new Element("TouchscreenConfigs");

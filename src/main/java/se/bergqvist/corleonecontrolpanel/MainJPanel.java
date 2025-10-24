@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import se.bergqvist.config.Config;
 import se.bergqvist.controlpanel.Button;
 import se.bergqvist.controlpanel.ControlPanel;
 import se.bergqvist.touch.TouchEnum;
@@ -49,11 +50,13 @@ public class MainJPanel extends JPanel implements MouseListener {
         this._frame = frame;
         this.addMouseListener(this);
 
-        // Hide the mouse cursor when it's on the panel
-        this.setCursor(this.getToolkit().createCustomCursor(
-                new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB),
-                new Point(),
-                null));
+        if (Config.get().hasTouchScreens()) {
+            // Hide the mouse cursor when it's on the panel
+            this.setCursor(this.getToolkit().createCustomCursor(
+                    new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB),
+                    new Point(),
+                    null));
+        }
     }
 
     public void setShowSelectScreen(boolean show, boolean onlyOneTouchscreen) {
