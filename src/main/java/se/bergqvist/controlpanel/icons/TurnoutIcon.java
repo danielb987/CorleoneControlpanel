@@ -167,6 +167,11 @@ public class TurnoutIcon extends Icon {
     }
 
     @Override
+    public boolean isClickable() {
+        return true;
+    }
+
+    @Override
     public boolean isHit(int x, int y, int hitX, int hitY) {
         return hitX >= x && hitX <= x + SIZE && hitY >= y && hitY <= y + SIZE;
     }

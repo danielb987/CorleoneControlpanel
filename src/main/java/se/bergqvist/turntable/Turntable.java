@@ -1,17 +1,17 @@
 package se.bergqvist.turntable;
 
-import com.fazecast.jSerialComm.SerialPortTimeoutException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import se.bergqvist.serial.SerialPort;
+import se.bergqvist.serial.*;
 
 /**
  * Turntable
@@ -19,6 +19,10 @@ import se.bergqvist.serial.SerialPort;
  * @author Daniel Bergqvist (C) 2025
  */
 public class Turntable implements Runnable {
+
+
+//    private final boolean ALLOW_FAKE_SERIAL_PORT = true;
+    private final boolean ALLOW_FAKE_SERIAL_PORT = false;
 
 
     public interface TurntableListener {
@@ -45,18 +49,21 @@ public class Turntable implements Runnable {
     public Turntable() {
         SerialPort port;
         try {
-            port = new SerialPort(PORTNAME);
+            port = new RealSerialPort(PORTNAME);
         } catch (Exception e) {
-            port = null;
-            System.out.println("No serial port");
+            if (ALLOW_FAKE_SERIAL_PORT) {
+                port = new FakeSerialPort();
+            } else {
+                port = null;
+                System.out.println("No serial port");
+            }
         }
         _serialPort = port;
 
-        int MAX = 48000;
-        double diameter = 130 * 12 * 25.4 / 160;
-        double omkrets = diameter * Math.PI;
-
-        System.out.format("Diameter: %1.2f mm, Omkrets: %1.2f mm, Steg/mm: %1.0f%n", diameter, omkrets, MAX / omkrets);
+//        int MAX = 48000;
+//        double diameter = 130 * 12 * 25.4 / 160;
+//        double omkrets = diameter * Math.PI;
+//        System.out.format("Diameter: %1.2f mm, Omkrets: %1.2f mm, Steg/mm: %1.0f%n", diameter, omkrets, MAX / omkrets);
 //        System.exit(0);
     }
 
@@ -106,7 +113,7 @@ public class Turntable implements Runnable {
                     sb.append((char)ch);
                 }
 //                System.out.format("ch: %d, %c%n", ch, ch);
-            } catch (SerialPortTimeoutException e) {
+            } catch (InterruptedIOException e) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e2) {

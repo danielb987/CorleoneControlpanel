@@ -225,6 +225,19 @@ public final class ControlPanel implements TurnoutListener {
     }
 
 
+    private IconData getIconData(int x, int y) {
+        for (int i=0; i < RASTER_NUM_X; i++) {
+            for (int j=0; j < RASTER_NUM_Y; j++) {
+                Icon icon = iconData[i][j].getIcon();
+//                System.out.format("%2d, %2d: %2d, %2d, %5b, %5b%n", i, j, x-i, y-j, icon.isClickable(), icon.isHit(x-i, y-j));
+                if (icon.isClickable() && icon.isHit(x-i, y-j)) {
+                    return iconData[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
     public void handleControls(int ex, int ey, JPanel panel) {
         if (ex > RASTER_X0 && ex < RASTER_MAX_X && ey > RASTER_Y0 && ey < RASTER_MAX_Y) {
             int x = (ex - RASTER_X0) / Icon.RASTER_SIZE;
@@ -236,9 +249,13 @@ public final class ControlPanel implements TurnoutListener {
 //                clickStatus._firstIconData.secondClick(iconData[x][y]);
                 clickStatus._waitForSecondClick = false;
             } else {
-                clickStatus._waitForSecondClick = iconData[x][y].click();
-                if (clickStatus._waitForSecondClick) {
-                    clickStatus._firstIconData = iconData[x][y];
+                IconData id = getIconData(x,y);
+                System.out.format("ClickStatus: %s%n", id);
+                if (id != null) {
+                    clickStatus._waitForSecondClick = id.click();
+                    if (clickStatus._waitForSecondClick) {
+                        clickStatus._firstIconData = id;
+                    }
                 }
             }
 //            boolean requireSecondClick = iconData[x][y].click();

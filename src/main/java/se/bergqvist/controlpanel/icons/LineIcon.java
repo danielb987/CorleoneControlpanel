@@ -158,6 +158,11 @@ public class LineIcon extends Icon {
     }
 
     @Override
+    public boolean isClickable() {
+        return false;
+    }
+
+    @Override
     public boolean isHit(int x, int y, int hitX, int hitY) {
         return hitX >= x && hitX <= x + SIZE && hitY >= y && hitY <= y + SIZE;
     }

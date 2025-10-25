@@ -88,6 +88,12 @@ public abstract class Icon {
 
     public abstract void drawFrame(Graphics2D g, int x, int y);
 
+    public abstract boolean isClickable();
+
+    public boolean isHit(int x, int y) {
+        return x == 0 && y == 0;
+    }
+
     public abstract boolean isHit(int x, int y, int hitX, int hitY);
 
     public abstract IconData createIconData();

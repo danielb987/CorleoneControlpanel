@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.jdom2.Element;
 import se.bergqvist.corleonecontrolpanel.CorleoneControlpanel;
+import se.bergqvist.layout.Layout;
 import se.bergqvist.turntable.Turntable;
 import se.bergqvist.turntable.Turntable.TurntableListener;
 
@@ -84,7 +85,7 @@ public class TurntableIcon extends Icon {
         _graphics.fillRect(0, 0, MY_SIZE, MY_SIZE);
         _graphics.setStroke(new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
-        _graphics.setColor(Color.RED);
+//        _graphics.setColor(Color.RED);
 //        _graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //        int angle = 144;    // 14,4 degrees
         double w = MY_SIZE;
@@ -97,7 +98,7 @@ public class TurntableIcon extends Icon {
 
         _graphics.setColor(Color.BLACK);
         for (int i=0; i < POSITIONS.length; i++) {
-            System.out.format("%2d: %8x, %8x, %8x, %b%n", i, connectingBits, 1 << i, connectingBits & (1 << i), (connectingBits & (1 << i)) != 0);
+//            System.out.format("%2d: %8x, %8x, %8x, %b%n", i, connectingBits, 1 << i, connectingBits & (1 << i), (connectingBits & (1 << i)) != 0);
             if ((connectingBits & (1 << i)) != 0) {
                 int x = (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[i]))*w);
                 int y = (int) Math.round(h2 + Math.sin(Math.toRadians(POSITIONS[i]))*h);
@@ -113,6 +114,7 @@ public class TurntableIcon extends Icon {
 
     @Override
     public Icon createIcon(int connectingBits) {
+//        connectingBits = 0b010000101101010000001101;
         return new TurntableIcon(_component, _type, connectingBits);
     }
 
@@ -134,6 +136,16 @@ public class TurntableIcon extends Icon {
     @Override
     public void drawFrame(Graphics2D g, int x, int y) {
         g.drawRect(x-1, y-1, MY_SIZE+1, MY_SIZE+1);
+    }
+
+    @Override
+    public boolean isClickable() {
+        return true;
+    }
+
+    @Override
+    public boolean isHit(int x, int y) {
+        return x >= 0 && x < NUM && y >= 0 && y < NUM;
     }
 
     @Override
@@ -193,7 +205,7 @@ public class TurntableIcon extends Icon {
             for (int i=0; i < POSITIONS.length; i++) {
                 Integer headTrack = _headTrackNoMap.get(i);
                 Integer tailTrack = _tailTrackNoMap.get(i);
-                System.err.format("track: %s, _currentTrack: %d%n", headTrack, _currentTrack);
+//                System.err.format("track: %s, _currentTrack: %d%n", headTrack, _currentTrack);
                 if (headTrack != null && headTrack == _currentTrack) {
                     head = i;
                 }
@@ -202,9 +214,7 @@ public class TurntableIcon extends Icon {
                 }
             }
             if (head != -1 && tail != -1) {
-                System.out.format("Head: %d, Tail: %d, Track: %d%n", head, tail, _currentTrack);
-                double w = MY_SIZE;
-                double h = MY_SIZE;
+//                System.out.format("Head: %d, Tail: %d, Track: %d%n", head, tail, _currentTrack);
                 double w2 = MY_SIZE / 2.0;
                 double h2 = MY_SIZE / 2.0;
                 int x1 = x + (int) Math.round(w2 + Math.cos(Math.toRadians(POSITIONS[head]))*(w2-SUB));
@@ -216,13 +226,14 @@ public class TurntableIcon extends Icon {
                 Shape s = new QuadCurve2D.Double(x1, y1, x+w2, y+h2, xx, yy);
                 g.draw(s);
                 int r = 20;
-                g.setColor(Color.red);
+                g.setColor(Color.RED);
                 if (_headOrTail) {
                     g.fillOval(x1-r/2,y1-r/2,r,r);
                 } else {
                     g.fillOval(xx-r/2,yy-r/2,r,r);
                 }
-                System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
+                g.setColor(Color.BLACK);
+//                System.err.format("DrawLine: %d, %d, %d, %d%n", xx, yy, x1, y1);
             } else {
                 drawNoTrack(g, x, y);
             }
@@ -272,6 +283,17 @@ public class TurntableIcon extends Icon {
             }
         }
 
+        /**
+         * The user has clicked on this icon.
+         * @return true if a second click is required, false otherwise
+         */
+        @Override
+        public boolean click() {
+            Turntable.get().gotoTrack(1, true);
+            Layout.get();
+            return false;
+        }
+
         @Override
         public int getState() {
             return 0;
@@ -297,8 +319,7 @@ public class TurntableIcon extends Icon {
                 trackMap.put(entry.getValue(), new HashMap.SimpleEntry<>(entry.getKey(), -1));
             }
             for (var entry : _tailTrackNoMap.entrySet()) {
-                Map.Entry<Integer, Integer> headTailEntry = trackMap.get(entry.getValue());
-                headTailEntry.setValue(entry.getKey());
+                trackMap.get(entry.getValue()).setValue(entry.getKey());
             }
 
 //            for (var entry : _headTrackNoMap.entrySet()) {
@@ -322,11 +343,23 @@ public class TurntableIcon extends Icon {
                 _headTrackNoMap.put(head, trackNo);
                 _tailTrackNoMap.put(tail, trackNo);
             }
+/*
+            setHeadTrackNo(21, 1);
+            setTailTrackNo(10, 1);
+            setHeadTrackNo(22, 2);
+            setTailTrackNo(12, 2);
+            setHeadTrackNo( 0, 3);
+            setTailTrackNo(14, 3);
+            setHeadTrackNo( 2, 4);
+            setTailTrackNo(15, 4);
+            setHeadTrackNo( 3, 5);
+            setTailTrackNo(17, 5);
+*/
         }
 
         @Override
         public void info(int speed, boolean direction, int pos, int track, boolean head) {
-            System.out.format("Speed: %d, Track: %d, Head: %b%n", speed, track, head);
+//            System.out.format("Speed: %d, Track: %d, Head: %b%n", speed, track, head);
             Status oldStatus = _status;
             int oldTrack = _currentTrack;
             boolean oldHeadOrTail = _headOrTail;
@@ -343,7 +376,7 @@ public class TurntableIcon extends Icon {
                 _status = Status.NoTrack;
             }
 
-            if (_status != oldStatus || _currentTrack != oldTrack || oldHeadOrTail) {
+            if (_status != oldStatus || _currentTrack != oldTrack || (_headOrTail != oldHeadOrTail)) {
                 CorleoneControlpanel.repaint();
             }
         }
