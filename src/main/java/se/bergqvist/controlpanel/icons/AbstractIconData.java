@@ -80,10 +80,10 @@ public abstract class AbstractIconData implements IconData {
         }
 
 //        if (1==1) return;
-        switch (_address) {
-            case 411, 412 -> _inverted = true;
+//        switch (_address) {
+//            case 411, 412 -> _inverted = true;
 //            case 101, 102, 105, 111 -> _inverted = false;
-        }
+//        }
     }
 
 }
