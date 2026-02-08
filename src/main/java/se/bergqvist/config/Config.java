@@ -126,7 +126,8 @@ public class Config {
             int position = Integer.parseInt(tcElement.getChildTextTrim("Position"));
             String devPath = tcElement.getChildTextTrim("DevPath");
             for (TouchscreenConfig tc : _touchscreenConfigs) {
-                if (tc._devPath.equals(devPath)) {
+//                if (tc._devPath.equals(devPath)) {
+                if (isDevPathsEqual(tc._devPath, devPath)) {
                     tc._position = position;
                 }
                 System.out.format("Old: Pos: %d, devPath: %s%n", tc._position, tc._devPath);
@@ -135,12 +136,20 @@ public class Config {
         }
     }
 
+    private boolean isDevPathsEqual(String path1, String path2) {
+        String p1 = path1.substring(0, "/sys/devices/platform/axi/1000120000.pcie/1f00200000.usb/xhci-hcd.0/usb1/1-2/1-2.1/1-2.1:1.0/".length());
+        String p2 = path2.substring(0, "/sys/devices/platform/axi/1000120000.pcie/1f00200000.usb/xhci-hcd.0/usb1/1-2/1-2.1/1-2.1:1.0/".length());
+//        System.out.format("p1: %s%n", p1);
+//        System.out.format("p2: %s%n", p2);
+        return p1.equals(p2);
+    }
+
 
     public static class ScreenConfig {
         private final int _position;
         private final MainJFrame _frame;
         private final TouchListener _touchListener;
-        private String _devPath;    // For example /sys/devices/platform/axi/1000120000.pcie/1f00300000.usb/xhci-hcd.1/usb3/3-1/3-1.2/3-1.2:1.0/0003:27C0:0858.000B/input/input22/event5
+//        private String _devPath;    // For example /sys/devices/platform/axi/1000120000.pcie/1f00300000.usb/xhci-hcd.1/usb3/3-1/3-1.2/3-1.2:1.0/0003:27C0:0858.000B/input/input22/event5
 
         public ScreenConfig(int position, MainJFrame frame, TouchListener touchListener) {
             this._position = position;
@@ -160,13 +169,13 @@ public class Config {
             return _touchListener;
         }
 
-        public String getDevPath() {
-            return _devPath;
-        }
+//        public String getDevPath() {
+//            return _devPath;
+//        }
 
-        public void setDevPath(String devPath) {
-            this._devPath = devPath;
-        }
+//        public void setDevPath(String devPath) {
+//            this._devPath = devPath;
+//        }
     }
 
 
